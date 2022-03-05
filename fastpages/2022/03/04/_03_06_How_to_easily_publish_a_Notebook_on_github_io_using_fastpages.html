@@ -8,17 +8,17 @@
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="fastpagesを使ってgithub.ioでNotebookを簡単に公開する方法" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
-<meta property="og:description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
-<link rel="canonical" href="https://taka4ma.github.io/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html" />
-<meta property="og:url" content="https://taka4ma.github.io/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html" />
+<meta name="description" content="Github PagesでJupyterやGoogle ColaboratoryのNotebookを簡単に公開する方法を紹介します" />
+<meta property="og:description" content="Github PagesでJupyterやGoogle ColaboratoryのNotebookを簡単に公開する方法を紹介します" />
+<link rel="canonical" href="https://taka4ma.github.io/fastpages/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html" />
+<meta property="og:url" content="https://taka4ma.github.io/fastpages/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html" />
 <meta property="og:site_name" content="fastpages" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-03-04T00:00:00-06:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="fastpagesを使ってgithub.ioでNotebookを簡単に公開する方法" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-03-04T00:00:00-06:00","datePublished":"2022-03-04T00:00:00-06:00","description":"An easy to use blogging platform with support for Jupyter Notebooks.","headline":"fastpagesを使ってgithub.ioでNotebookを簡単に公開する方法","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html"},"url":"https://taka4ma.github.io/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-03-04T00:00:00-06:00","datePublished":"2022-03-04T00:00:00-06:00","description":"Github PagesでJupyterやGoogle ColaboratoryのNotebookを簡単に公開する方法を紹介します","headline":"fastpagesを使ってgithub.ioでNotebookを簡単に公開する方法","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html"},"url":"https://taka4ma.github.io/fastpages/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/fastpages/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://taka4ma.github.io/fastpages/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/fastpages/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -73,7 +73,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">fastpagesを使ってgithub.ioでNotebookを簡単に公開する方法</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-03-04T00:00:00-06:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">fastpagesを使ってgithub.ioでNotebookを簡単に公開する方法</h1><p class="page-description"><a href='https://pages.github.com/'>Github Pages</a>でJupyterやGoogle ColaboratoryのNotebookを簡単に公開する方法を紹介します</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-03-04T00:00:00-06:00" itemprop="datePublished">
         Mar 4, 2022
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -84,39 +84,25 @@ window.onload = wrap_img;
 </span></p>
 
     
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/fastpages/categories/#fastpages">fastpages</a>
+        
+      
+      </p>
+    
 
     
-      
-        <div class="pb-5 d-flex flex-justify-center">
-          <div class="px-2">
-
-    <a href="https://github.com/taka4ma/fastpages/tree/master/_notebooks/2022_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.ipynb" role="button" target="_blank">
-<img class="notebook-badge-image" src="/fastpages/assets/badges/github.svg" alt="View On GitHub">
-    </a>
-</div>
-
-          <div class="px-2">
-    <a href="https://mybinder.org/v2/gh/taka4ma/fastpages/master?filepath=_notebooks%2F2022_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/fastpages/assets/badges/binder.svg" alt="Open In Binder"/>
-    </a>
-</div>
-
-          <div class="px-2">
-    <a href="https://colab.research.google.com/github/taka4ma/fastpages/blob/master/_notebooks/2022_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/fastpages/assets/badges/colab.svg" alt="Open In Colab"/>
-    </a>
-</div>
-          <div class="px-2">
-  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Ftaka4ma%2Ffastpages%2Fblob%2Fmaster%2F_notebooks%2F2022_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.ipynb" target="_blank">
-      <img class="notebook-badge-image" src="/fastpages/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
-  </a>
-</div>
-
-        </div>
       </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <!--
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#背景">背景 </a></li>
+<li class="toc-entry toc-h2"><a href="#fastpagesとは">fastpagesとは </a></li>
+<li class="toc-entry toc-h2"><a href="#Initial-settings">Initial settings </a></li>
+<li class="toc-entry toc-h2"><a href="#markdownファイルを投稿する">markdownファイルを投稿する </a></li>
+<li class="toc-entry toc-h2"><a href="#Notebookファイルを投稿する">Notebookファイルを投稿する </a></li>
+</ul><!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
@@ -125,9 +111,21 @@ window.onload = wrap_img;
 
 <div class="container" id="notebook-container">
         
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#32972;&#26223;">&#32972;&#26223;<a class="anchor-link" href="#&#32972;&#26223;"> </a></h2><p>Jupyter NotebookやGoogle ColaboratoryのNotebookファイルをGithub Pagesで公開する方法は、以下の2つが知られています。</p>
+<p><a href="https://colab.research.google.com/github/taka4ma/fastpages/blob/master/2022_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="背景">
+<a class="anchor" href="#%E8%83%8C%E6%99%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>背景<a class="anchor-link" href="#%E8%83%8C%E6%99%AF"> </a>
+</h2>
+<p>Jupyter NotebookやGoogle ColaboratoryのNotebookファイルをGithub Pagesで公開する方法は、以下の2つが知られています。</p>
 <ol>
 <li>NotebookファイルをMarkdownファイルへエクスポートしてGithubリポジトリへPushする。(GitHub PagesにはリポジトリにPushされたMarkdownファイルにアクセスすると、HTMLとしてレンダリングする機能があるため。)</li>
 <li>NotebookファイルをGitHub GistにPushし、リポジトリにはgistの埋め込みスクリプトを記述したMarkdownかHTMLをPushする。(GitHub GistにはNotebookファイルを埋め込みスクリプトで表示するとHTMLとしてレンダリングする機能があるため。)</li>
@@ -139,24 +137,37 @@ window.onload = wrap_img;
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="fastpages&#12392;&#12399;">fastpages&#12392;&#12399;<a class="anchor-link" href="#fastpages&#12392;&#12399;"> </a></h2><p><a href="https://github.com/fastai/fastpages">fastai/fastpages: An easy to use blogging platform, with enhanced support for Jupyter Notebooks.</a> にて公開されているソフトウェアです。使用するには公開されているリポジトリをCloneし、初期設定を行います。そしてそのリポジトリのmasterブランチへルールに従ってNotebookファイルをPushします。そうするとGithub Actionが実行されます。実行されたGithub Actionによりコンテナが起動し、リポジトリがコンテナ上にCloneされ、ファイルのコンバートが行われ、出来たファイルがリポジトリのgh-pagesブランチへPushされます。このリポジトリはgh-pagesブランチをGitHub Pagesのコンテンツとして公開するように設定されているので、コンバートされたファイルが公開されます。</p>
+<h2 id="fastpagesとは">
+<a class="anchor" href="#fastpages%E3%81%A8%E3%81%AF" aria-hidden="true"><span class="octicon octicon-link"></span></a>fastpagesとは<a class="anchor-link" href="#fastpages%E3%81%A8%E3%81%AF"> </a>
+</h2>
+<p><a href="https://github.com/fastai/fastpages">fastai/fastpages: An easy to use blogging platform, with enhanced support for Jupyter Notebooks.</a> にて公開されているソフトウェアです。使用するには公開されているリポジトリをCloneし、初期設定を行います。そしてそのリポジトリのmasterブランチへルールに従ってNotebookファイルをPushします。そうするとGithub Actionが実行されます。実行されたGithub Actionによりコンテナが起動し、リポジトリがコンテナ上にCloneされ、ファイルのコンバートが行われ、出来たファイルがリポジトリのgh-pagesブランチへPushされます。このリポジトリはgh-pagesブランチをGitHub Pagesのコンテンツとして公開するように設定されているので、コンバートされたファイルが公開されます。</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Initial-settings">Initial settings<a class="anchor-link" href="#Initial-settings"> </a></h2><ol>
+<h2 id="Initial-settings">
+<a class="anchor" href="#Initial-settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Initial settings<a class="anchor-link" href="#Initial-settings"> </a>
+</h2>
+<ol>
 <li>fastpagesのリポジトリ(<a href="https://github.com/fastai/fastpages">https://github.com/fastai/fastpages</a>) にブラウザでアクセスする.</li>
 <li>Setup Instructionsに、<code>Generate a copy of this repo by clicking on this link.</code>と書かれているので、リンクをクリックする.</li>
 <li>"Create a new repository from fastpages"というタイトルの、リポジトリ作成画面が表示されるので,<ol>
-<li><code>owner</code>に任意のアカウントまたはOrganizationsを選択する.</li>
-<li><code>Repository name</code>にGithubの自分のユーザー名<strong>以外</strong>の名前を設定する.</li>
-<li><code>Public/Private</code>は<code>Public</code>を選ぶ。</li>
-<li><code>Include all branches</code>にチェックを<strong>入れない</strong>. (<a href="https://github.com/fastai/fastpages/issues/608">https://github.com/fastai/fastpages/issues/608</a>)</li>
-<li><code>Create repository from template</code>をクリックする.</li>
+<li>
+<code>owner</code>に任意のアカウントまたはOrganizationsを選択する.</li>
+<li>
+<code>Repository name</code>にGithubの自分のユーザー名<strong>以外</strong>の名前を設定する.</li>
+<li>
+<code>Public/Private</code>は<code>Public</code>を選ぶ。</li>
+<li>
+<code>Include all branches</code>にチェックを<strong>入れない</strong>. (<a href="https://github.com/fastai/fastpages/issues/608">https://github.com/fastai/fastpages/issues/608</a>)</li>
+<li>
+<code>Create repository from template</code>をクリックする.</li>
 </ol>
 </li>
 <li>ブラウザに作成したリポジトリが表示される</li>
@@ -169,10 +180,14 @@ window.onload = wrap_img;
 <li>PRの"Before you merge this PR"セクションを順番に処理する<ol>
 <li>"Create an ssh key-pair. Open this utility. Select: RSA and 4096 and leave Passphrase blank. Click the blue button Generate-SSH-Keys." <ol>
 <li>ブラウザで<a href="https://8gwifi.org/sshfunctions.jsp">Online Generate SSH keys algorithm RSA,DSA,ECDSA</a>を開く</li>
-<li><code>SSH-Keygen Online Algorithm</code>で<code>RSA</code>を選択する.</li>
-<li><code>RSA Key Size</code>で<code>4096</code>を選択する</li>
-<li><code>Passphrase</code>は入力しない</li>
-<li><code>Generate-SSH-Keys</code>をクリックする. そうすると、SSH鍵が作成され、表示される</li>
+<li>
+<code>SSH-Keygen Online Algorithm</code>で<code>RSA</code>を選択する.</li>
+<li>
+<code>RSA Key Size</code>で<code>4096</code>を選択する</li>
+<li>
+<code>Passphrase</code>は入力しない</li>
+<li>
+<code>Generate-SSH-Keys</code>をクリックする. そうすると、SSH鍵が作成され、表示される</li>
 </ol>
 <ul>
 <li>ssh鍵は、ローカルマシンで、<code>ssh-keygen</code>コマンドで作成してもよい.</li>
@@ -180,17 +195,23 @@ window.onload = wrap_img;
 </li>
 <li>"Navigate to this link and click New repository secret. Copy and paste the Private Key into the Value field. This includes the "---BEGIN RSA PRIVATE KEY---" and "--END RSA PRIVATE KEY---" portions. In the Name field, name the secret SSH_DEPLOY_KEY."<ol>
 <li>リポジトリの, Settings &gt; Secrets &gt; Actions を開き、<code>New repository secret</code>をクリックする.</li>
-<li><code>Name</code>に<code>SSH_DEPLOY_KEY</code>と入力.</li>
-<li><code>Value</code>に生成した秘密鍵をペーストする. この時、"---BEGIN RSA PRIVATE KEY---" から "--END RSA PRIVATE KEY---"までを含むこと.</li>
-<li><code>Add secret</code>をクリックして、登録する.</li>
+<li>
+<code>Name</code>に<code>SSH_DEPLOY_KEY</code>と入力.</li>
+<li>
+<code>Value</code>に生成した秘密鍵をペーストする. この時、"---BEGIN RSA PRIVATE KEY---" から "--END RSA PRIVATE KEY---"までを含むこと.</li>
+<li>
+<code>Add secret</code>をクリックして、登録する.</li>
 </ol>
 </li>
 <li>"Navigate to this link and click the Add deploy key button. Paste your Public Key from step 1 into the Key box. In the Title, name the key anything you want, for example fastpages-key. Finally, make sure you click the checkbox next to Allow write access (pictured below), and click Add key to save the key."<ol>
 <li>リポジトリの, Settings &gt; Deploy keysを開き、<code>Add deploy key</code>をクリックする.</li>
-<li><code>タイトル</code>に、fastpages-keyなど、好きな名前を付けます。</li>
+<li>
+<code>タイトル</code>に、fastpages-keyなど、好きな名前を付けます。</li>
 <li>作成した公開鍵を<code>Key</code>にペーストする.</li>
-<li><code>Allow write access</code>のチェックボックスにチェックをつける.</li>
-<li><code>Add key</code>をクリックしてキーを保存する.</li>
+<li>
+<code>Allow write access</code>のチェックボックスにチェックをつける.</li>
+<li>
+<code>Add key</code>をクリックしてキーを保存する.</li>
 </ol>
 </li>
 </ol>
@@ -201,7 +222,8 @@ window.onload = wrap_img;
 </li>
 <li>リポジトリのCodeタブを開く。</li>
 <li>README.mdが変更され、fastpagesによってデプロイされるコンテンツのトップのURLが記述されているので、そのURLをリンクで開く<ul>
-<li>URLは通常、 <a href="https://ユーザ名.github.io/リポジトリ名">https://ユーザ名.github.io/リポジトリ名</a></li>
+<li>URLは通常、 <a href="https://%E3%83%A6%E3%83%BC%E3%82%B6%E5%90%8D.github.io/%E3%83%AA%E3%83%9D%E3%82%B8%E3%83%88%E3%83%AA%E5%90%8D">https://ユーザ名.github.io/リポジトリ名</a>
+</li>
 <li>404の場合は、デプロイがまだ終わっていないので、数分待ってからリロードする</li>
 </ul>
 </li>
@@ -210,21 +232,31 @@ window.onload = wrap_img;
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="markdown&#12501;&#12449;&#12452;&#12523;&#12434;&#25237;&#31295;&#12377;&#12427;">markdown&#12501;&#12449;&#12452;&#12523;&#12434;&#25237;&#31295;&#12377;&#12427;<a class="anchor-link" href="#markdown&#12501;&#12449;&#12452;&#12523;&#12434;&#25237;&#31295;&#12377;&#12427;"> </a></h2><ol>
+<h2 id="markdownファイルを投稿する">
+<a class="anchor" href="#markdown%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E6%8A%95%E7%A8%BF%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>markdownファイルを投稿する<a class="anchor-link" href="#markdown%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E6%8A%95%E7%A8%BF%E3%81%99%E3%82%8B"> </a>
+</h2>
+<ol>
 <li>YYYY-MM-DD-*.mdの命名規則に従って、投稿するmarkdownファイルのファイル名を変更します。</li>
-<li><code>/_post</code> ディレクトリへプッシュしてください。</li>
+<li>
+<code>/_post</code> ディレクトリへプッシュしてください。</li>
 </ol>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Notebook&#12501;&#12449;&#12452;&#12523;&#12434;&#25237;&#31295;&#12377;&#12427;">Notebook&#12501;&#12449;&#12452;&#12523;&#12434;&#25237;&#31295;&#12377;&#12427;<a class="anchor-link" href="#Notebook&#12501;&#12449;&#12452;&#12523;&#12434;&#25237;&#31295;&#12377;&#12427;"> </a></h2><ol>
+<h2 id="Notebookファイルを投稿する">
+<a class="anchor" href="#Notebook%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E6%8A%95%E7%A8%BF%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notebookファイルを投稿する<a class="anchor-link" href="#Notebook%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E6%8A%95%E7%A8%BF%E3%81%99%E3%82%8B"> </a>
+</h2>
+<ol>
 <li>YYYY-MM-DD-*.mdの命名規則に従って、投稿するnotebookファイルのファイル名を変更します。</li>
-<li><code>/_notebooks</code> ディレクトリへプッシュしてください。</li>
+<li>
+<code>/_notebooks</code> ディレクトリへプッシュしてください。</li>
 </ol>
 
 </div>
@@ -234,7 +266,7 @@ window.onload = wrap_img;
 
 
 
-  </div><a class="u-url" href="/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html" hidden></a>
+  </div><a class="u-url" href="/fastpages/fastpages/2022/03/04/_03_06_How_to_easily_publish_a_Notebook_on_github_io_using_fastpages.html" hidden></a>
 </article>
 
       </div>
