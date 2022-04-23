@@ -1,14 +1,12 @@
 ---
 toc: true
 layout: post
-description: In Creating a Django Development Environment on Cloud9, the steps to install the latest version of SQLite on Amazon Linux2, the OS running Cloud9, in order to build a Django development environment on Cloud9.
+description: この記事は、[Cloud9にDjango開発環境を作る](https://taka4ma.github.io/contents/0008.html)で、Cloud9でDjangoの開発環境を構築するため、Cloud9を実行しているOS、Amazon Linux2に最新バージョンのSQLiteをインストールする手順をまとめたものです。
 categories: [sqlite, amazon_linux2]
 title: Amazon Linux2に最新バージョンのSQLiteをインストールする
 ---
 
 # Amazon Linux2に最新バージョンのSQLiteをインストールする
-
-この記事は、[Cloud9にDjango開発環境を作る](https://taka4ma.github.io/contents/0008.html)で、Cloud9でDjangoの開発環境を構築するため、Cloud9を実行しているOS、Amazon Linux2に最新バージョンのSQLiteをインストールする手順をまとめたもの。
 
 まずは、yumでインストールできるか確認する。
 
