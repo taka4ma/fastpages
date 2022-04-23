@@ -1,0 +1,277 @@
+<h1 id="ubuntu-serverへのjupyter-notebookインストール手順">Ubuntu Serverへのjupyter notebookインストール手順</h1>
+
+<p>これは、AWS EC2のUbuntu Server 14.04 LTSへjupyter notebookをインストールし起動するための手順です。(AWSの設定手順については、この記事では触れません。)</p>
+
+<h2 id="前提条件">前提条件</h2>
+
+<ul>
+  <li>EC2インスタンスは作成済みのこと</li>
+  <li>セキュリティグループのインバウンドルールに以下を追加しておくこと</li>
+  <li>タイプ:カスタムTCPルール, ポート範囲:8888, 送信元は自身の環境に合わせて適切に設定すること</li>
+</ul>
+
+<p>なお、この手順は以下の環境で動作確認しています。</p>
+
+<ul>
+  <li>リージョン: 東京</li>
+  <li>AMI: Ubuntu Server 14.04 LTS (HVM), SSD Volume Type - ami-936d9d93</li>
+  <li>インスタンスタイプ: t2.micro</li>
+</ul>
+
+<h2 id="手順">手順</h2>
+
+<p><a href="http://jupyter.readthedocs.org/en/latest/install.html#new-users-new-to-python-and-jupyter">Installation — Jupyter Documentation 4.1.0b1 documentation</a>ではanacondaの利用を勧めているので、pyenvを使ってpythonとanacondaをインストールし、anacondaでjupyter notebookをインストールします。</p>
+
+<h3 id="ec2インスタンスへのsshアクセス">EC2インスタンスへのsshアクセス</h3>
+
+<p>EC2インスタンスにはsshでアクセスします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> aws-key ubuntu@public-ip
+</code></pre></div></div>
+
+<h3 id="git-インストール">git インストール</h3>
+
+<p>pyenvのインストールにgitが必要になるのでインストールします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> git
+</code></pre></div></div>
+
+<h3 id="pyenv-インストール">pyenv インストール</h3>
+
+<p>pyenvの<a href="https://github.com/yyuu/pyenv#basic-github-checkout">Installation-Basic GitHub Checkout</a>の1~4の手順でインストールします。
+ただし、basic-github-checkoutの手順そのままでは上手く行きません。幾つか手順を変える必要があります。</p>
+
+<ol>
+  <li>Ubuntu 14.04では.bash_profileが.profileに変わっているので、そこを読み替える <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></li>
+  <li>手順4はシェルのリスタートなので<code class="language-plaintext highlighter-rouge">exec</code>に<code class="language-plaintext highlighter-rouge">-l</code>オプションが不足している <sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup></li>
+</ol>
+
+<p>実際に叩くコマンドは以下になります。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'export PYENV_ROOT="$HOME/.pyenv"'</span> <span class="o">&gt;&gt;</span> ~/.profile
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'export PATH="$PYENV_ROOT/bin:$PATH"'</span> <span class="o">&gt;&gt;</span> ~/.profile
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'eval "$(pyenv init -)"'</span> <span class="o">&gt;&gt;</span> ~/.profile
+<span class="nv">$ </span><span class="nb">exec</span> <span class="nt">-l</span> <span class="nv">$SHELL</span>
+</code></pre></div></div>
+
+<h3 id="anacondaインストール">anacondaインストール</h3>
+
+<p>pyenvででpythonとanacondaをインストールします。
+まず、pyenvでインストール出来るanacondaのリストを確認しておきます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pyenv <span class="nb">install</span> <span class="nt">-l</span> | <span class="nb">grep </span>anaconda
+  anaconda-1.4.0
+  anaconda-1.5.0
+  anaconda-1.5.1
+  anaconda-1.6.0
+  anaconda-1.6.1
+  anaconda-1.7.0
+  anaconda-1.8.0
+  anaconda-1.9.0
+  anaconda-1.9.1
+  anaconda-1.9.2
+  anaconda-2.0.0
+  anaconda-2.0.1
+  anaconda-2.1.0
+  anaconda-2.2.0
+  anaconda-2.3.0
+  anaconda-2.4.0
+  anaconda2-2.4.0
+  anaconda2-2.4.1
+  anaconda3-2.0.0
+  anaconda3-2.0.1
+  anaconda3-2.1.0
+  anaconda3-2.2.0
+  anaconda3-2.3.0
+  anaconda3-2.4.0
+  anaconda3-2.4.1
+</code></pre></div></div>
+
+<p>このとき表示されたバージョンをインストールするとanacondaに加えてpythonもインストールされます。<code class="language-plaintext highlighter-rouge">anaconda-*</code>及び<code class="language-plaintext highlighter-rouge">anaconda2-</code>がPython2系、<code class="language-plaintext highlighter-rouge">anaconda3-*</code>がPython3系です。<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup></p>
+
+<p>今回の手順ではanaconda2.4.1をPython3系で使うことにします。
+なお、この時ダウンロードされる<code class="language-plaintext highlighter-rouge">Anaconda3-2.4.1-Linux-x86_64.sh</code>は270MBほどのサイズです。EC2ではあまり問題にならないと思いますが、回線の細い環境でインストールする場合は時間がかかる場合がありあす。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pyenv <span class="nb">install </span>anaconda3-2.4.1
+Downloading Anaconda3-2.4.1-Linux-x86_64.sh...
+-&gt; http://repo.continuum.io/archive/Anaconda3-2.4.1-Linux-x86_64.sh
+Installing Anaconda3-2.4.1-Linux-x86_64...
+Installed Anaconda3-2.4.1-Linux-x86_64 to /home/ubuntu/.pyenv/versions/anaconda3-2.4.1
+</code></pre></div></div>
+
+<p>インストールが終わったらanaconda3-2.4.1をpyenvのグローバルにします。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pyenv global anaconda3-2.4.1 
+</code></pre></div></div>
+
+<p>なお、グローバルに設定したPythonとanacondaのバージョンは<code class="language-plaintext highlighter-rouge">python --version</code>で確認できます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>python <span class="nt">--version</span>
+Python 3.5.1 :: Anaconda 2.4.1 <span class="o">(</span>64-bit<span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="jupyterのインストール">jupyterのインストール</h3>
+<p>anacondaをインストールできたらいよいよjupyter notebookのインストールです。
+コマンドは<code class="language-plaintext highlighter-rouge">conda install -y jupyter</code>だけで大丈夫です。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-y</span> jupyter
+Fetching package metadata: ....
+Solving package specifications: ..................................................................
+Package plan <span class="k">for </span>installation <span class="k">in </span>environment /home/ubuntu/.pyenv/versions/anaconda3-2.4.1:
+
+The following packages will be downloaded:
+
+    package                    |            build
+    <span class="nt">---------------------------</span>|-----------------
+    openssl-1.0.2e             |                0         3.2 MB  defaults
+    sqlite-3.9.2               |                0         3.9 MB  defaults
+    decorator-4.0.6            |           py35_0           6 KB  defaults
+    pyzmq-15.2.0               |           py35_0         792 KB  defaults
+    requests-2.9.1             |           py35_0         648 KB  defaults
+    setuptools-19.2            |           py35_0         348 KB  defaults
+    conda-3.19.0               |           py35_0         180 KB  defaults
+    ipython-4.0.2              |           py35_0         970 KB  defaults
+    ipykernel-4.2.2            |           py35_0         115 KB  defaults
+    nbconvert-4.1.0            |           py35_0         275 KB  defaults
+    notebook-4.1.0             |           py35_0         4.4 MB  defaults
+    ipywidgets-4.1.1           |           py35_0          99 KB  defaults
+    <span class="nt">------------------------------------------------------------</span>
+                                           Total:        14.8 MB
+
+The following packages will be UPDATED:
+
+    conda:      3.18.8-py35_0 defaults <span class="nt">--</span><span class="o">&gt;</span> 3.19.0-py35_0 defaults
+    decorator:  4.0.4-py35_0  defaults <span class="nt">--</span><span class="o">&gt;</span> 4.0.6-py35_0  defaults
+    ipykernel:  4.1.1-py35_0  defaults <span class="nt">--</span><span class="o">&gt;</span> 4.2.2-py35_0  defaults
+    ipython:    4.0.1-py35_0  defaults <span class="nt">--</span><span class="o">&gt;</span> 4.0.2-py35_0  defaults
+    ipywidgets: 4.1.0-py35_0  defaults <span class="nt">--</span><span class="o">&gt;</span> 4.1.1-py35_0  defaults
+    nbconvert:  4.0.0-py35_0  defaults <span class="nt">--</span><span class="o">&gt;</span> 4.1.0-py35_0  defaults
+    notebook:   4.0.6-py35_0  defaults <span class="nt">--</span><span class="o">&gt;</span> 4.1.0-py35_0  defaults
+    openssl:    1.0.2d-0      defaults <span class="nt">--</span><span class="o">&gt;</span> 1.0.2e-0      defaults
+    pyzmq:      14.7.0-py35_1 defaults <span class="nt">--</span><span class="o">&gt;</span> 15.2.0-py35_0 defaults
+    requests:   2.8.1-py35_0  defaults <span class="nt">--</span><span class="o">&gt;</span> 2.9.1-py35_0  defaults
+    setuptools: 18.5-py35_0   defaults <span class="nt">--</span><span class="o">&gt;</span> 19.2-py35_0   defaults
+    sqlite:     3.8.4.1-1     defaults <span class="nt">--</span><span class="o">&gt;</span> 3.9.2-0       defaults
+
+Fetching packages ...
+openssl-1.0.2e 100% |################################| Time: 0:00:01   2.16 MB/s
+sqlite-3.9.2-0 100% |################################| Time: 0:00:01   2.43 MB/s
+decorator-4.0. 100% |################################| Time: 0:00:00   7.56 MB/s
+pyzmq-15.2.0-p 100% |################################| Time: 0:00:01 770.63 kB/s
+requests-2.9.1 100% |################################| Time: 0:00:01 552.84 kB/s
+setuptools-19. 100% |################################| Time: 0:00:00 467.58 kB/s
+conda-3.19.0-p 100% |################################| Time: 0:00:00 284.50 kB/s
+ipython-4.0.2- 100% |################################| Time: 0:00:01 826.19 kB/s
+ipykernel-4.2. 100% |################################| Time: 0:00:00 245.78 kB/s
+nbconvert-4.1. 100% |################################| Time: 0:00:00 369.84 kB/s
+notebook-4.1.0 100% |################################| Time: 0:00:01   2.37 MB/s
+ipywidgets-4.1 100% |################################| Time: 0:00:00 229.46 kB/s
+Extracting packages ...
+<span class="o">[</span>      COMPLETE      <span class="o">]</span>|###################################################| 100%
+Unlinking packages ...
+<span class="o">[</span>      COMPLETE      <span class="o">]</span>|###################################################| 100%
+Linking packages ...
+<span class="o">[</span>      COMPLETE      <span class="o">]</span>|###################################################| 100%
+</code></pre></div></div>
+
+<h3 id="jupyterの設定">jupyterの設定</h3>
+
+<p>jupyter notebookをEC2で使うには、いくつかの設定を変更しなければなりません。
+まずは、コンフィグファイルを作成します。<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">4</a></sup></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>jupyter notebook <span class="nt">--generate-config</span>
+Writing default config to: /home/ubuntu/.jupyter/jupyter_notebook_config.py
+</code></pre></div></div>
+
+<p>出力のとおり<code class="language-plaintext highlighter-rouge">/home/ubuntu/.jupyter/jupyter_notebook_config.py</code>にコンフィグファイルが作られるので、以下の項目を変更します。</p>
+
+<pre><code class="language-Python:jupyter_notebook_config.py">c.NotebookApp.ip = '*' # ローカルホスト以外からもアクセス可能にする
+c.NotebookApp.open_browser = False # ブラウザが自動で開かないようにする
+</code></pre>
+
+<p>なお、各項目の変更前の値は以下です。</p>
+
+<pre><code class="language-Python:jupyter_notebook_config.py"># c.NotebookApp.ip = 'localhost'
+# c.NotebookApp.open_browser = True
+</code></pre>
+
+<p>sedで処理する場合は次のように。</p>
+
+<pre><code class="language-Bash">$ sed -ri "s/# c.NotebookApp.ip = 'localhost'/c.NotebookApp.ip = '*'/g" /home/ubuntu/.jupyter/jupyter_notebook_config.py
+$ sed -ri "s/# c.NotebookApp.open_browser = True/c.NotebookApp.open_browser = False/g" /home/ubuntu/.jupyter/jupyter_notebook_config.py
+</code></pre>
+
+<p>なお、コンフィグファイルの各項目について知りたい場合は、<a href="http://jupyter-notebook.readthedocs.org/en/latest/config.html#config-file-and-command-line-options">Config file and command line options — Jupyter Notebook 4.1.0rc1 documentation</a>を参照してください。</p>
+
+<h3 id="jupyter-notebookの開始">jupyter notebookの開始</h3>
+
+<p>以上でjupyter notebookのインストールと設定が出来ました。
+コンソールで<code class="language-plaintext highlighter-rouge">jupyter notebook</code>と入力するとjupyter notebookがスタートします。</p>
+
+<pre><code class="language-Bash">$ jupyter notebook
+</code></pre>
+
+<p>ブラウザでEC2インスタンスのpublic_ip_address:8888にアクセスし、jupyter notebookのトップページが表示されればインストール・設定は完了です。</p>
+
+<h2 id="オプション">オプション</h2>
+
+<h3 id="パスワードの設定">パスワードの設定</h3>
+
+<p>これまでの手順でjupyter notebookを立ち上げてアクセスすることは可能ですが、このまま立ち上げると誰でもアクセス可能(=サーバ上でPythonコードを実行し放題)なので、パスワードを設定します。<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">5</a></sup></p>
+
+<p>まずサーバのコンソールでipythonを立ち上げパスワードのハッシュを得ます。</p>
+
+<pre><code class="language-Bash">$ ipython
+In [1]: from notebook.auth import passwd
+
+In [2]: passwd()
+Enter password:     # パスワードを入力
+Verify password:    # パスワードを再入力
+Out[2]: 'sha1:371793e28601:458c6bb9fc9371410b37cfc0d5833bfb54a26d7c' #ハッシュ値が出力されるのでこれをコピーする
+
+In [3]: quit()    # ipythonを終了
+</code></pre>
+
+<p>次に<code class="language-plaintext highlighter-rouge">/home/ubuntu/.jupyter/jupyter_notebook_config.py</code>にパスワードのハッシュを書き込みます。
+<code class="language-plaintext highlighter-rouge">c.NotebookApp.password</code>はコメントアウトされているので、<code class="language-plaintext highlighter-rouge">#</code>も忘れずに消します。</p>
+
+<pre><code class="language-Python:jupyter_notebook_config.py">c.NotebookApp.password = 'sha1:371793e28601:458c6bb9fc9371410b37cfc0d5833bfb54a26d7c'
+</code></pre>
+
+<h3 id="暗号化通信の設定">暗号化通信の設定</h3>
+
+<p>パスワードを設定してもこのままでは平文で送信されるため、パスワードもjupyter notebookとブラウザ間の通信も盗聴される恐れがあります。</p>
+
+<p>今回は <strong>とりあえず</strong> 、<a href="http://jupyter-notebook.readthedocs.org/en/latest/public_server.html#using-ssl-for-encrypted-communication">Using SSL for encrypted communication</a>の内容で自己署名証明書を設定して通信経路の暗号化を行ってみます。</p>
+
+<pre><code class="language-Bash">$ openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout .jupyter/mykey.key -out .jupyter/mycert.pem
+</code></pre>
+
+<p>作成したcertfileとkeyfileを使用するようコンフィグを設定します。</p>
+
+<pre><code class="language-Python:jupyter_notebook_config.py">c.NotebookApp.certfile = '/home/ubuntu/.jupyter/mycert.pem'
+c.NotebookApp.keyfile = '/home/ubuntu/.jupyter/mykey.key'
+</code></pre>
+
+<p>jupyter notebookをスタートしたら、httpsでのアクセスのみを受け付けるようになります。</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="http://qiita.com/HirofumiYashima/items/4b1db4f05fc11d160b4e">Ubuntu14.04 - Ubuntu 14.04 の .bash_profile ファイル のファイル名 は、.profile に変わっていた件 - Qiita</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p><a href="http://qiita.com/rentalname@github/items/14b32c0b50b277837528">shell - シェルの再起動 - Qiita</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p><a href="http://www.task-notes.com/entry/20151116/1447642800">AnacondaでPythonの分析環境をまとめてインストール - TASK NOTES</a> <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p><a href="http://jupyter.readthedocs.org/en/latest/config.html#python-config-files">Configuring Jupyter applications — Jupyter Documentation 4.1.0b1 documentation</a> <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:5" role="doc-endnote">
+      <p><a href="http://akiniwa.hatenablog.jp/entry/2013/11/25/001805">ipython notebookをリモートサーバ上で動かす。 - 忘れないようにメモっとく</a> <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
