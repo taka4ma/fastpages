@@ -1,0 +1,688 @@
+<h1 id="ansibletdd環境をtest-kitchen-serverspec-dockerで作る2015年10月版">AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)</h1>
+
+<p>これはtest-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順です。
+Ubuntu14,CentOS7でApache2をインストールし、サービスを起動し、ブート時のサービス自動起動を設定するベストプラクティス構成<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>のAnsible playbookを例として取りあげます。</p>
+
+<h2 id="この記事の目標">この記事の目標</h2>
+
+<p>AnsibleのTDD環境として、test-kitchenで次のことが出来る環境を作ります。</p>
+
+<ul>
+  <li>Docker上にUbuntu14, CentOS7のコンテナを立ち上げ</li>
+  <li>各コンテナをAnsibleでプロビジョニング</li>
+  <li>各コンテナのプロビジョニング結果をServerspecで検証</li>
+</ul>
+
+<h2 id="前提条件等">前提条件等</h2>
+
+<p>この記事の前提条件は以下のとおりです。</p>
+
+<ul>
+  <li>作成するAnsible playbookの構成はベストプラクティスのディレクトリレイアウトに従う<sup id="fnref:1:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>　</li>
+  <li>作業環境は
+    <ul>
+      <li>CentOS6.7(x86_64)</li>
+      <li>Rubyインストール済みのこと</li>
+      <li>bundlerインストール済みのこと</li>
+      <li>Dockerインストール済みのこと</li>
+    </ul>
+  </li>
+</ul>
+
+<p>なお、この記事の検証に使用した環境は以下のとおりです。</p>
+
+<pre><code class="language-bash:この記事の検証に使用した環境">$ cat /etc/redhat-release
+CentOS release 6.7 (Final)
+$ arch
+x86_64
+$ ruby -v
+ruby 2.1.5p273 (2014-11-13 revision 48405) [x86_64-linux]
+$ bundler -v
+Bundler version 1.9.2
+$ docker -v
+Docker version 1.7.1, build 786b29d
+</code></pre>
+
+<p>(2015-12-04追記)
+環境構築用のVagrantfileを作りました。
+https://github.com/takasix/vagrant_kitchen_ansible</p>
+
+<p>(元々別の用があって作ったものなので、バージョン指定が入っておらず、この記事の検証に使用した環境と全く同じ環境は構築されません。追記時点では記事の内容が全て動くことを確認済みです。)</p>
+
+<h2 id="本文">本文</h2>
+
+<h3 id="プロジェクト用ディレクトリの作成">プロジェクト用ディレクトリの作成</h3>
+
+<p>プロジェクト用のディレクトリを作成します。これ以降の手順はこのディレクトリをベースに行います。</p>
+
+<pre><code class="language-bash:プロジェクト用ディレクトリの作成">$ mkdir ~/ansibletdd
+$ cd ~/ansibletdd
+</code></pre>
+
+<h3 id="test-kitchenインストール">test-kitchenインストール</h3>
+
+<p>プロジェクトディレクトリにGemfileを作成し、bundlerを使ってtest-kitchenをインストールします。</p>
+
+<pre><code class="language-rb:Gemfile">source 'https://rubygems.org'
+
+gem 'test-kitchen'
+</code></pre>
+
+<p>書けたらbundle installします。</p>
+
+<pre><code class="language-bash:test-kitchenインストール">$ bundle install
+Fetching gem metadata from https://rubygems.org/..........
+Fetching version metadata from https://rubygems.org/...
+Fetching dependency metadata from https://rubygems.org/..
+Resolving dependencies...
+Using mixlib-shellout 2.2.1
+Using net-ssh 2.9.2
+Using net-scp 1.2.1
+Using safe_yaml 1.0.4
+Using thor 0.19.1
+Using test-kitchen 1.4.2
+Using bundler 1.9.2
+Bundle complete! 1 Gemfile dependency, 7 gems now installed.
+Use `bundle show [gemname]` to see where a bundled gem is installed.
+</code></pre>
+
+<h3 id="test-kitchen初期化">test-kitchen初期化</h3>
+
+<p><code class="language-plaintext highlighter-rouge">kitchen init</code>コマンドでtest-kitchenを初期化します。このとき–driver(または-D)オプションでドライバを、–provisioner(または-P)オプションでプロビジョナを指定できます。
+今回は、テストを行う環境にDockerを使うのでドライバに”kitchen-docker”、プロビジョニングにはAnsibleを使うのでプロビジョナに”ansible_playbook”をそれぞれ指定します。</p>
+
+<pre><code class="language-bash:test-kitchenの初期化">$ bundle exec kitchen init --driver=kitchen-docker --provisioner=ansible_playbook
+      create  .kitchen.yml
+      create  chefignore
+      create  test/integration/default
+      append  Gemfile
+You must run `bundle install' to fetch any new gems.
+</code></pre>
+
+<p>初期化を行うと.kitchen.ymlファイルといくつかのディレクトリが作成されます。また、Gemfileが変更されます。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> .kitchen.yml
+<span class="nt">---</span>
+driver:
+  name: docker
+
+provisioner:
+  name: ansible_playbook
+
+platforms:
+  - name: ubuntu-14.04
+  - name: centos-7.1
+
+suites:
+  - name: default
+    run_list:
+    attributes:
+<span class="nv">$ </span>
+<span class="nv">$ </span>tree
+<span class="nb">.</span>
+├── Gemfile
+├── Gemfile.lock
+├── chefignore
+└── <span class="nb">test</span>
+    └── integration
+        └── default
+<span class="nv">$ </span>
+<span class="nv">$ </span><span class="nb">cat </span>Gemfile
+<span class="nb">source</span> <span class="s1">'https://rubygems.org'</span>
+
+gem <span class="s1">'test-kitchen'</span>
+gem <span class="s2">"kitchen-docker"</span> 
+</code></pre></div></div>
+
+<h3 id="kitchen-ansibleとserverspecインストール">kitchen-ansibleとServerspecインストール</h3>
+
+<p><code class="language-plaintext highlighter-rouge">kitchen init</code>によって変更されたGemfileにkitchen-ansibleとserverspecを加え、bundlerを使ってインストールします。</p>
+
+<pre><code class="language-rb:Gemfile">source 'https://rubygems.org'
+
+gem 'test-kitchen'
+gem "kitchen-docker"
+gem 'kitchen-ansible'
+gem 'serverspec'
+</code></pre>
+
+<p>変更したら、もう一度<code class="language-plaintext highlighter-rouge">bundle install</code>します。</p>
+
+<pre><code class="language-bash:kitchen-ansibleとServerspecインストール">$ bundle install
+Resolving dependencies...
+Using diff-lcs 1.2.5
+Using multipart-post 2.0.0
+Using faraday 0.9.2
+Using highline 1.7.8
+Using thor 0.19.1
+Using librarian 0.1.2
+Using librarian-ansible 1.0.6
+Using mixlib-shellout 2.2.1
+Using net-ssh 2.9.2
+Using net-scp 1.2.1
+Using safe_yaml 1.0.4
+Using test-kitchen 1.4.2
+Using kitchen-ansible 0.0.27
+Using kitchen-docker 2.3.0
+Using multi_json 1.11.2
+Using net-telnet 0.1.1
+Using rspec-support 3.3.0
+Using rspec-core 3.3.2
+Using rspec-expectations 3.3.1
+Using rspec-mocks 3.3.2
+Using rspec 3.3.0
+Using rspec-its 1.2.0
+Using sfl 2.2
+Using specinfra 2.43.10
+Using serverspec 2.24.1
+Using bundler 1.9.2
+Bundle complete! 4 Gemfile dependencies, 26 gems now installed.
+Use `bundle show [gemname]` to see where a bundled gem is installed.
+</code></pre>
+
+<h3 id="kitchenymlの設定">.kitchen.ymlの設定</h3>
+
+<p><code class="language-plaintext highlighter-rouge">kitchen init</code>で作成された.kitchen.ymlを編集しtest-kitchenの設定を行います。
+(編集が終わった.kitchen.ymlはこのセクションの一番最後にあります。)</p>
+
+<pre><code class="language-yaml:初期状態の.kitchen.yml">---
+driver:
+  name: docker
+
+provisioner:
+  name: ansible_playbook
+
+platforms:
+  - name: ubuntu-14.04
+  - name: centos-7.1
+
+suites:
+  - name: default
+    run_list:
+    attributes:
+</code></pre>
+
+<h4 id="driver">driver</h4>
+
+<p>driverは、変更する必要はありません。</p>
+
+<pre><code class="language-yaml:.kitchen.ymlのdriver">driver:
+  name: docker
+</code></pre>
+
+<h4 id="provisioner">provisioner</h4>
+
+<p>provisionerにはプロビジョナーのオプションを以下のように設定します。
+なお、ansible_playbookのオプションは<a href="https://github.com/neillturner/kitchen-ansible/blob/master/provisioner_options.md">Provisioner Options</a>も参照してください。</p>
+
+<pre><code class="language-.kitchen.ymlのprovisioner">provisioner:
+  name: ansible_playbook
+  playbook: site.yml
+  roles_path: ./roles
+  group_vars_path: ./group_vars
+  host_vars_path: ./host_vars
+  filter_plugins: ./filter_plugins
+  additional_copy_path:
+    - webservers.yml
+  hosts: webservers
+  require_ansible_omnibus: true
+  require_ruby_for_busser: true
+</code></pre>
+
+<ol>
+  <li>
+    <p>playbook
+ master playbook(site.yml)を.kitchen.ymlからの相対パスで設定します。</p>
+  </li>
+  <li>
+    <p>roles_path, group_vars_path, host_vars_path, filter_plugins
+ それぞれのディレクトリを.kitchen.ymlからの相対パスで設定します。</p>
+  </li>
+  <li>
+    <p>additional_copy_path
+ 他にテスト環境へコピーするファイル・ディレクトリを.kitchen.ymlからの相対パスで設定します。この設定は配列なので複数の項目を設定できます。</p>
+
+    <p>ベストプラクティス構成では、サーバー群(tier)ごとのPlay bookを作成し、site.ymlでサーバ群ごとのPlay bookをincludeすることで、site.ymlをインフラ全体の定義とします。<sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup> しかし、kitchen-ansibleはplaybookに設定したymlをテスト環境へコピーしますが、その中でincludeしているymlまではコピーしてくれません。そこでサーバー群別Play bookもテスト環境へコピーされるようadditional_copy_pathに設定します。
+ (rolesディレクトリにあるrole別のPlay bookはroles_pathの設定によってコピーされます。)</p>
+
+    <p>今回は、Apacheをインストールしたいので、サーバー群Play bookはwebservers.ymlという名前で作ることにして、とりあえずadditional_copy_pathに書いておきます。</p>
+  </li>
+  <li>
+    <p>hosts
+ hostsオプションにはテスト環境がどのホストグループに含まれるホストかを定義します。
+ テスト環境にはhostsの設定を元に以下のようなinventryファイルが作成され、プロビジョニングに使用されます。</p>
+
+    <pre><code class="language-text:/tmp/kitchen/hosts"> localhost ansible_connection=local
+ [webservers]  # &lt;= ここにhostsオプションが設定される
+ localhost
+</code></pre>
+
+    <p>今回は、ホストグループもwebserversという名前で作ることにして、とりあえずhostsに書いておきます。</p>
+  </li>
+  <li>
+    <p>require_ansible_omnibus
+ trueにすると、テスト環境へのAnsibleインストールを、<code class="language-plaintext highlighter-rouge">ansible_omnibus_url</code>オプション(デフォルトは　<a href="https://raw.githubusercontent.com/neillturner/omnibus-ansible/master/ansible_install.sh">https://raw.githubusercontent.com/neillturner/omnibus-ansible/master/ansible_install.sh</a>)で定義されたスクリプトで行います。</p>
+
+    <p>(このオプションのデフォルトはfalseです。falseの場合、テスト環境へのAnsibleのインストールはyumまたはaptで行うのですが、記事執筆時点ではsyntax errorとなるため、オムニバスインストーラーを使用します。)</p>
+  </li>
+  <li>
+    <p>require_ruby_for_busser
+ trueの場合、テスト環境でbusserの実行に使用するrubyをインストールします。(busserはtest-kitchenのテストフレームワークです。)</p>
+
+    <p>このオプションのデフォルトはfalseで、その場合はChefをインストールし、それに同梱されているrubyでbusserを実行します。今回はAnsibleを使うためChefは不要、その上rubyよりもインストールに時間がかかるのでtrueにします。</p>
+  </li>
+</ol>
+
+<h4 id="platforms">platforms</h4>
+
+<p>platformsにはテスト環境を以下のように設定します。</p>
+
+<pre><code class="language-yaml:.kitchen.ymlのplatforms">platforms:
+  - name: ubuntu-14.04
+  - name: centos-7.1
+    driver_config:
+      privileged: true
+      run_command: /sbin/init; sleep 3
+</code></pre>
+
+<p>本記事執筆時点のcentos:centos7イメージでは、systemctlを使用するためには特権モードかつ起動コマンドを/sbin/initにしなければならない<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup>ので、そのためのオプションを追加します。</p>
+
+<h4 id="verifier">verifier</h4>
+
+<p>.kitchen.ymlにverifierを追加しテストツールのオプションを以下のように設定します。</p>
+
+<pre><code class="language-yaml:.kitchen.ymlのverifier">verifier:
+  ruby_bindir: '/usr/bin'
+</code></pre>
+
+<p>verifierの<code class="language-plaintext highlighter-rouge">ruby_bindir</code>にはテストツールの実行に使用するrubyがインストールされているディレクトリを設定します。
+デフォルトは<code class="language-plaintext highlighter-rouge">/opt/chef/embedded/bin</code>で、これはChefに同梱されるrubyのディレクトリを指しています。
+今回はprovisioner設定でChefを入れず、代わりにrubyをインストールするため、<code class="language-plaintext highlighter-rouge">ruby_bindir</code>にはそちらのパスを設定します。</p>
+
+<h4 id="suites">suites</h4>
+
+<p>suitesにはテストスイートを以下のように設定します。</p>
+
+<pre><code class="language-.kitchen.ymlのsuites">suites:
+  - name: default
+    attributes:
+</code></pre>
+
+<p>run_listはkitchen-ansibleでは使用しないため消してしまいます。
+attributesは今回は使用しませんが、extra_varsやtagsを設定する場合はここにぶら下げるので、残しておきます。</p>
+
+<p>以上で、.kitchen.ymlの設定は終わりです。
+最終的に.kitchen.ymlは以下のようになります。</p>
+
+<pre><code class="language-yaml:編集後の.kitchen.yml">---
+driver:
+  name: docker
+
+provisioner:
+  name: ansible_playbook
+  playbook: site.yml
+  roles_path: ./roles
+  group_vars_path: ./group_vars
+  host_vars_path: ./host_vars
+  filter_plugins: ./filter_plugins
+  additional_copy_path:
+    - webservers.yml
+  hosts: webservers
+  require_ansible_omnibus: true
+  require_ruby_for_busser: true
+
+platforms:
+  - name: ubuntu-14.04
+  - name: centos-7.1
+    driver_config:
+      privileged: true
+      run_command: /sbin/init; sleep 3
+
+verifier:
+  ruby_bindir: '/usr/bin'
+
+suites:
+  - name: default
+    attributes:
+</code></pre>
+
+<p>.kitchen.ymlの編集が終わったら、<code class="language-plaintext highlighter-rouge">kitchen list</code>コマンドを叩くと以下のようにテスト環境が表示されるはずです。</p>
+
+<pre><code class="language-bash:kitchen_list">$ bundle exec kitchen list
+Instance             Driver  Provisioner      Verifier  Transport  Last Action
+default-ubuntu-1404  Docker  AnsiblePlaybook  Busser    Ssh        &lt;Not Created&gt;
+default-centos-71    Docker  AnsiblePlaybook  Busser    Ssh        &lt;Not Created&gt;
+</code></pre>
+
+<p>テスト環境は[テストスイート名]-[プラットフォーム名]になり、platformとsuiteの組み合わせになります。</p>
+
+<h3 id="serverspecの初期化">Serverspecの初期化</h3>
+
+<p>test-kitchenのルール<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">4</a></sup>にしたがって、<code class="language-plaintext highlighter-rouge">test/integration/default</code>ディレクトリへServerspecファイルを配置します。
+(<code class="language-plaintext highlighter-rouge">test/integration/default</code>のdefaultの部分は.kitchen.ymlのsuitesのnameに対応します。テストスイートの名前を変更している場合はServerspecを配置するパスも変更しなければなりません。)</p>
+
+<pre><code class="language-bash:Serverspec初期化">$ cd test/integration/default
+$ bundle exec serverspec-init
+Select OS type:
+
+  1) UN*X
+  2) Windows
+
+Select number: 1
+
+Select a backend type:
+
+  1) SSH
+  2) Exec (local)
+
+Select number: 2
+
+ + spec/
+ + spec/localhost/
+ + spec/localhost/sample_spec.rb
+ + spec/spec_helper.rb
+ + Rakefile
+</code></pre>
+
+<p>Serverspecの初期化によって作成されたspecディレクトリをserverspecへリネームします。
+これは、test-kitchenがテスト環境へインストールするテストランナー(busser)のプラグインをディレクトリ名から決めるためです。ディレクトリ名を変更しない場合busser-specという存在しないプラグインをインストールしようとしてエラーになります。)</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mv </span>spec/ serverspec/
+</code></pre></div></div>
+
+<p>Serverspecの初期化を行うと、サンプルのspecファイルが作成されます。
+中身は以下のとおりで、今回作成したいAnsible play bookにちょうど良いので名前だけ変更して中身はそのまま使います。</p>
+
+<pre><code class="language-bash:sample_spec.rbのリネーム">mv test/integration/default/serverspec/localhost/sample_spec.rb test/integration/default/serverspec/localhost/webservers_spec.rb
+</code></pre>
+
+<pre><code class="language-rb:test/integration/default/serverspec/localhost/webservers_spec.rb">require 'spec_helper'
+
+describe package('httpd'), :if =&gt; os[:family] == 'redhat' do
+  it { should be_installed }
+end
+
+describe package('apache2'), :if =&gt; os[:family] == 'ubuntu' do
+  it { should be_installed }
+end
+
+describe service('httpd'), :if =&gt; os[:family] == 'redhat' do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe service('apache2'), :if =&gt; os[:family] == 'ubuntu' do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe service('org.apache.httpd'), :if =&gt; os[:family] == 'darwin' do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe port(80) do
+  it { should be_listening }
+end
+</code></pre>
+
+<p>リネームしたserverspecディレクトリにGemfileを追加します。</p>
+
+<pre><code class="language-rb:test/integration/default/serverspec/Gemfile">source 'https://rubygems.org'
+
+gem 'rake'
+gem 'serverspec'
+</code></pre>
+
+<p>参考:<a href="https://github.com/test-kitchen/busser-serverspec/issues/28">Rake dependency missing for older rubies · Issue #28</a></p>
+
+<h3 id="仮のsiteyml作成">仮のsite.yml作成</h3>
+
+<p>以上でTDDの準備が出来ました。と、言いたいところですが、この状態で<code class="language-plaintext highlighter-rouge">kitchen test</code>コマンドを叩くとエラーが発生します。</p>
+
+<pre><code class="language-bash:kitche_test">$ cd ~/ansibletdd
+$ bundle exec kitchen test
+-----&gt; Starting Kitchen (v1.4.2)
+-----&gt; Cleaning up any prior instances of &lt;default-ubuntu-1404&gt;
+
+~~~中略~~~
+
+Preparing playbook
+&gt;&gt;&gt;&gt;&gt;&gt; ------Exception-------
+&gt;&gt;&gt;&gt;&gt;&gt; Class: Kitchen::ActionFailed
+&gt;&gt;&gt;&gt;&gt;&gt; Message: Failed to complete #converge action: [unknown file type: site.yml]
+&gt;&gt;&gt;&gt;&gt;&gt; ----------------------
+&gt;&gt;&gt;&gt;&gt;&gt; Please see .kitchen/logs/kitchen.log for more details
+&gt;&gt;&gt;&gt;&gt;&gt; Also try running `kitchen diagnose --all` for configuration
+</code></pre>
+
+<p>とりあえずエラーを解消するため仮のsite.ymlとwebservers.ymlを作成します。</p>
+
+<pre><code class="language-yaml:site.yml">---
+- include: webservers.yml
+</code></pre>
+
+<pre><code class="language-yaml:webservers.yml">---
+- hosts: webservers
+  tasks:
+</code></pre>
+
+<p>作成したらもう一度<code class="language-plaintext highlighter-rouge">kitchen test</code>を行います。</p>
+
+<pre><code class="language-bash:kitchen_test">$ bundle exec kitchen test
+-----&gt; Starting Kitchen (v1.4.2)
+-----&gt; Cleaning up any prior instances of &lt;default-ubuntu-1404&gt;
+
+~~~ 中略 ~~~
+
+       Finished in 0.27052 seconds (files took 0.46124 seconds to load)
+       4 examples, 4 failures
+
+       Failed examples:
+
+       rspec /tmp/verifier/suites/serverspec/localhost/webservers_spec.rb:8 # Package "apache2" should be installed
+       rspec /tmp/verifier/suites/serverspec/localhost/webservers_spec.rb:17 # Service "apache2" should be enabled
+       rspec /tmp/verifier/suites/serverspec/localhost/webservers_spec.rb:18 # Service "apache2" should be running
+       rspec /tmp/verifier/suites/serverspec/localhost/webservers_spec.rb:27 # Port "80" should be listening
+
+~~~ 後略 ~~~
+</code></pre>
+
+<p>今度は、default-ubuntu-1404でServerspecによる検証まで行われ、全てfailしました。
+(test-kitchenはテストが失敗するとそのインスタンスでテストをやめてしまうので、それ以降のインスタンスでテストを行いたい場合は、<code class="language-plaintext highlighter-rouge">bundle exec kitchen test default-centos-71</code>のようにインスタンス名を指定します。インスタンス名は正規表現でも指定できるので、条件に合う複数のインスタンスをテストすることも出来ます。)</p>
+
+<p>これでようやくTDDの準備が出来ました。
+あとは、全てのテストが成功するよう、「書く -&gt; テスト」を繰り返しながらAnsible playbookを書いていけばOKです。</p>
+
+<h4 id="ansible-playbookの実装">Ansible playbookの実装</h4>
+
+<p>TDD環境が出来たので、あとはPlay bookを実装していくだけです。
+書き方の詳細は本記事の趣旨から外れるのでGoogle先生に聞いてもらうとして、とりあえず全てのテストが通るPlay bookを置いておきます。</p>
+
+<pre><code class="language-YAML:site.yml">---
+- include: webservers.yml
+</code></pre>
+
+<pre><code class="language-YAML:webservers.yml">---
+- hosts: webservers
+  roles:
+    - apache
+</code></pre>
+
+<pre><code class="language-YAML:roles/apache/tasks/main.yml">- apt: pkg=apache2
+  when: "ansible_os_family == 'Debian'"
+
+- yum: pkg=httpd
+  when: "ansible_os_family == 'RedHat'"
+
+- service: name=apache2 state=started enabled=yes
+  when: "ansible_os_family == 'Debian'"
+
+- service: name=httpd state=started enabled=yes
+  when: "ansible_os_family == 'RedHat'"
+</code></pre>
+
+<p>これで、<code class="language-plaintext highlighter-rouge">kitchen test</code>すれば全てのテストが成功するはずです。</p>
+
+<pre><code class="language-bash:kitchen_test">$ bundle exec kitchen test
+-----&gt; Starting Kitchen (v1.4.2)
+-----&gt; Cleaning up any prior instances of &lt;default-ubuntu-1404&gt;
+
+~~~ 中略 ~~~
+
+       Package "apache2"
+         should be installed
+
+       Service "apache2"
+         should be enabled
+         should be running
+
+       Port "80"
+         should be listening
+
+       Finished in 0.1665 seconds (files took 1.22 seconds to load)
+       4 examples, 0 failures
+
+       Finished verifying &lt;default-ubuntu-1404&gt; (0m28.28s).
+
+~~~ 中略 ~~~
+
+       Package "httpd"
+         should be installed
+
+       Service "httpd"
+         should be enabled
+         should be running
+
+       Port "80"
+         should be listening
+
+       Finished in 0.16315 seconds (files took 1.07 seconds to load)
+       4 examples, 0 failures
+
+       Finished verifying &lt;default-centos-71&gt; (0m24.25s).
+
+~~~　後略 ~~~
+</code></pre>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>AnsibleをTDDするための環境構築の一連の手順を追いかけました。
+test-kitchenを使ってトライ&amp;エラーを簡単に行えるTDD環境を用意するとAnsible(やChef)の開発をサクサク進められる用になりますが、デフォルト設定では動かない箇所などハマりどころがいくつかあるので注意が必要です。ハマった場合はログと関連ドキュメントを読んで頑張りましょう。</p>
+
+<h2 id="appendix">appendix</h2>
+
+<h3 id="docker-imageを指定したい場合">Docker imageを指定したい場合</h3>
+
+<p>kitchen-docerは<code class="language-plaintext highlighter-rouge">Kitchen::Driver::Docker.default_image</code>によってplatform.nameからテスト環境のベースイメージのタグを生成しますが、任意のタグを指定することも出来ます。
+その場合は、.kitchen.ymlを以下のように変更します。</p>
+
+<pre><code class="language-yaml.kitchen.yml">platforms:
+  - name: ubuntu-14.04
+    driver_config:         # &lt;= 追加
+      image: ubuntu:14.04  # &lt;= 追加
+  - name: centos-7
+    driver_config:
+       image: centos:centos7 # &lt;= 追加
+       privileged: true
+       run_command: /sbin/init; sleep 3
+</code></pre>
+
+<h3 id="複数のホストグループに対応したい場合">複数のホストグループに対応したい場合</h3>
+
+<p>Play bookにホストグループ(例えば、apservers)を追加定義したい場合は、以下のようにします。</p>
+
+<p>テストスイートではprovisionerのオプションを上書きできるので、テストスイートを増やし、スイートごとにホストグループオプションを設定します。</p>
+
+<pre><code class="language-yaml.kitchen.ymlのsuites">suites:
+  - name: webservers    # &lt;= defaultから変更
+    provisioner:        # &lt;= 追加
+      hosts: webservers # &lt;= 追加
+  - name: apservers     # &lt;= 追加
+    provisioner:        # &lt;= 追加
+      hosts: apservers  # &lt;= 追加
+</code></pre>
+
+<p>次にスイートごとのServerspecを用意します。
+現在のtestディレクトリは以下のような状態です。</p>
+
+<pre><code class="language-bash:">$ tree
+test
+└── integration
+    └── default
+        ├── Rakefile
+        └── serverspec
+            ├── Gemfile
+            ├── localhost
+            │   └── webservers_spec.rb
+            └── spec_helper.rb
+</code></pre>
+
+<p>このディレクトリに以下の操作を行います。</p>
+
+<ol>
+  <li>defaultディレクトリはテストスイート名なのでこれはwebserversに変更します</li>
+  <li>Rakefile, Gemfile, spec_helper.rbは複数のテストスイートで共通なので、helpersディレクトリを作りそこへ移動します</li>
+  <li>webserversディレクトリをコピーしapserversディレクトリとします</li>
+  <li>コピーしたディレクトリのwebservers_spec.rbをapservers_spec.rbにリネームします。</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mv test</span>/integration/default/ <span class="nb">test</span>/integration/webservers
+<span class="nv">$ </span><span class="nb">mkdir</span> <span class="nt">-p</span> <span class="nb">test</span>/integration/helpers/serverspec
+<span class="nv">$ </span><span class="nb">cd test</span>/integration
+<span class="nv">$ </span><span class="nb">mv </span>webservers/Rakefile helpers/
+<span class="nv">$ </span><span class="nb">mv </span>webservers/serverspec/Gemfile helpers/serverspec/
+<span class="nv">$ </span><span class="nb">mv </span>webservers/serverspec/spec_helper.rb helpers/serverspec/
+<span class="nv">$ </span><span class="nb">cp</span> <span class="nt">-r</span> webservers/ apservers
+<span class="nv">$ </span><span class="nb">mv </span>apservers/serverspec/localhost/webservers_spec.rb apservers/serverspec/localhost/apservers_spec.rb
+<span class="nv">$ </span>tree <span class="nb">test
+test</span>
+└── integration
+    ├── apservers
+    │   └── serverspec
+    │       └── localhost
+    │           └── apservers_spec.rb
+    ├── helpers
+    │   ├── Rakefile
+    │   └── serverspec
+    │       ├── Gemfile
+    │       └── spec_helper.rb
+    └── webservers
+        └── serverspec
+            └── localhost
+                └── webservers_spec.rb
+</code></pre></div></div>
+
+<p>以上で共通のファイルをhelpersへ移動し、各テストスイートに必要なファイル・ディレクトリを用意できました。あとはapservers_spec.rbファイルをapserversグループに適した形に書き換えれば完了です。</p>
+
+<h2 id="参考資料">参考資料</h2>
+
+<ul>
+  <li><a href="http://qiita.com/r_takaishi/items/f3e68e3f7072b9327c3f">Ansibleのテストをtest-kitchenとServerspec、dockerで行う - Qiita</a></li>
+  <li><a href="http://qiita.com/nmatsui/items/7a8a3cdd7cc50169627f">Chef &amp; Test Kitchen+Serverspec &amp; Docker &amp; PackerによるInfrastructure as Code事始め - Qiita</a></li>
+  <li><a href="http://qiita.com/sawanoboly/items/9f560bd63ad0712b17ba">test-kitchenのつかいかた - Qiita</a></li>
+  <li><a href="http://kitchen.ci/docs/getting-started/">Introduction - KitchenCI</a></li>
+  <li><a href="https://docs.chef.io/kitchen.html">Kitchen — Chef Docs</a></li>
+  <li><a href="http://docs.ansible.com/ansible/playbooks_best_practices.html">Best Practices — Ansible Documentation</a></li>
+  <li><a href="https://github.com/neillturner/kitchen-ansible">neillturner/kitchen-ansible</a></li>
+  <li><a href="https://github.com/portertech/kitchen-docker">portertech/kitchen-docker</a></li>
+  <li><a href="https://github.com/test-kitchen/busser">test-kitchen/busser</a></li>
+  <li><a href="https://github.com/test-kitchen/busser-serverspec">test-kitchen/busser-serverspec</a></li>
+</ul>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p><a href="http://docs.ansible.com/ansible/playbooks_best_practices.html">Best Practices — Ansible Documentation</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a> <a href="#fnref:1:1" class="reversefootnote" role="doc-backlink">&#8617;<sup>2</sup></a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p><a href="http://docs.ansible.com/ansible/playbooks_best_practices.html#top-level-playbooks-are-separated-by-role">Best Practices — Ansible Documentation#top-level-playbooks-are-separated-by-role</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:3" role="doc-endnote">
+      <p><a href="http://qiita.com/nmatsui/items/7a8a3cdd7cc50169627f#test-kitchen%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90">Chef &amp; Test Kitchen+Serverspec &amp; Docker &amp; PackerによるInfrastructure as Code事始め - Qiita</a> <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:4" role="doc-endnote">
+      <p><a href="http://kitchen.ci/docs/getting-started/writing-test">Writing a Test - KitchenCI</a> <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
