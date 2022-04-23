@@ -4,21 +4,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>このnotebookは…… | fastpages</title>
+<title>GoogleLolaboratoryからboto3を使ってEC2にインスタンスを起動するサンプルnotebook | fastpages</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="このnotebookは……" />
+<meta property="og:title" content="GoogleLolaboratoryからboto3を使ってEC2にインスタンスを起動するサンプルnotebook" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
-<meta property="og:description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
-<link rel="canonical" href="https://taka4ma.github.io/fastpages/2022/04/22/_boto3sample.html" />
-<meta property="og:url" content="https://taka4ma.github.io/fastpages/2022/04/22/_boto3sample.html" />
+<meta name="description" content="Amazon Web Services (AWS)のPython向けSDKであるBotoをGoogleColaboratoryから使用するサンプルです" />
+<meta property="og:description" content="Amazon Web Services (AWS)のPython向けSDKであるBotoをGoogleColaboratoryから使用するサンプルです" />
+<link rel="canonical" href="https://taka4ma.github.io/fastpages/jupyter/boto3/2022/04/22/_launching_an_ec2_instance_from_colab_using_boto3.html" />
+<meta property="og:url" content="https://taka4ma.github.io/fastpages/jupyter/boto3/2022/04/22/_launching_an_ec2_instance_from_colab_using_boto3.html" />
 <meta property="og:site_name" content="fastpages" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-04-22T00:00:00-05:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="このnotebookは……" />
+<meta property="twitter:title" content="GoogleLolaboratoryからboto3を使ってEC2にインスタンスを起動するサンプルnotebook" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-04-22T00:00:00-05:00","datePublished":"2022-04-22T00:00:00-05:00","description":"An easy to use blogging platform with support for Jupyter Notebooks.","headline":"このnotebookは……","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/2022/04/22/_boto3sample.html"},"url":"https://taka4ma.github.io/fastpages/2022/04/22/_boto3sample.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-04-22T00:00:00-05:00","datePublished":"2022-04-22T00:00:00-05:00","description":"Amazon Web Services (AWS)のPython向けSDKであるBotoをGoogleColaboratoryから使用するサンプルです","headline":"GoogleLolaboratoryからboto3を使ってEC2にインスタンスを起動するサンプルnotebook","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/jupyter/boto3/2022/04/22/_launching_an_ec2_instance_from_colab_using_boto3.html"},"url":"https://taka4ma.github.io/fastpages/jupyter/boto3/2022/04/22/_launching_an_ec2_instance_from_colab_using_boto3.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/fastpages/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://taka4ma.github.io/fastpages/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/fastpages/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -73,7 +73,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">このnotebookは......</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-04-22T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">GoogleLolaboratoryからboto3を使ってEC2にインスタンスを起動するサンプルnotebook</h1><p class="page-description">Amazon Web Services (AWS)のPython向けSDKであるBotoをGoogleColaboratoryから使用するサンプルです</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-04-22T00:00:00-05:00" itemprop="datePublished">
         Apr 22, 2022
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -84,30 +84,40 @@ window.onload = wrap_img;
 </span></p>
 
     
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/fastpages/categories/#jupyter">jupyter</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/fastpages/categories/#boto3">boto3</a>
+        
+      
+      </p>
+    
 
     
       
         <div class="pb-5 d-flex flex-justify-center">
           <div class="px-2">
 
-    <a href="https://github.com/taka4ma/fastpages/tree/master/_notebooks/2020-11-01_boto3sample.ipynb" role="button" target="_blank">
+    <a href="https://github.com/taka4ma/fastpages/tree/master/_notebooks/2020-11-01_launching_an_ec2_instance_from_colab_using_boto3.ipynb" role="button" target="_blank">
 <img class="notebook-badge-image" src="/fastpages/assets/badges/github.svg" alt="View On GitHub">
     </a>
 </div>
 
           <div class="px-2">
-    <a href="https://mybinder.org/v2/gh/taka4ma/fastpages/master?filepath=_notebooks%2F2020-11-01_boto3sample.ipynb" target="_blank">
+    <a href="https://mybinder.org/v2/gh/taka4ma/fastpages/master?filepath=_notebooks%2F2020-11-01_launching_an_ec2_instance_from_colab_using_boto3.ipynb" target="_blank">
         <img class="notebook-badge-image" src="/fastpages/assets/badges/binder.svg" alt="Open In Binder"/>
     </a>
 </div>
 
           <div class="px-2">
-    <a href="https://colab.research.google.com/github/taka4ma/fastpages/blob/master/_notebooks/2020-11-01_boto3sample.ipynb" target="_blank">
+    <a href="https://colab.research.google.com/github/taka4ma/fastpages/blob/master/_notebooks/2020-11-01_launching_an_ec2_instance_from_colab_using_boto3.ipynb" target="_blank">
         <img class="notebook-badge-image" src="/fastpages/assets/badges/colab.svg" alt="Open In Colab"/>
     </a>
 </div>
           <div class="px-2">
-  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Ftaka4ma%2Ffastpages%2Fblob%2Fmaster%2F_notebooks%2F2020-11-01_boto3sample.ipynb" target="_blank">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Ftaka4ma%2Ffastpages%2Fblob%2Fmaster%2F_notebooks%2F2020-11-01_launching_an_ec2_instance_from_colab_using_boto3.ipynb" target="_blank">
       <img class="notebook-badge-image" src="/fastpages/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
   </a>
 </div>
@@ -116,33 +126,74 @@ window.onload = wrap_img;
       </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <!--
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#このnotebookは......">このnotebookは...... </a></li>
+<li class="toc-entry toc-h2"><a href="#作業準備">作業準備 </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#AWSアクセスキーの作成">AWSアクセスキーの作成 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#インストール">インストール </a></li>
+<li class="toc-entry toc-h2"><a href="#コンフィグレーション">コンフィグレーション </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#アクセスキーIDを設定する">アクセスキーIDを設定する </a></li>
+<li class="toc-entry toc-h3"><a href="#シークレットアクセスキーを設定する">シークレットアクセスキーを設定する </a></li>
+<li class="toc-entry toc-h3"><a href="#デフォルトリージョンを設定する">デフォルトリージョンを設定する </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#boto3を使用してみる">boto3を使用してみる </a></li>
+</ul><!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
-# file to edit: _notebooks/2020-11-01_boto3sample.ipynb
+# file to edit: _notebooks/2020-11-01_launching_an_ec2_instance_from_colab_using_boto3.ipynb
 -->
 
 <div class="container" id="notebook-container">
         
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a href="https://colab.research.google.com/gist/taka4ma/6cc516acd306cbcd68b771d85b3808c2/boto3sample.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a></p>
+<p><a href="https://colab.research.google.com/gist/taka4ma/6cc516acd306cbcd68b771d85b3808c2/boto3sample.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#20316;&#26989;&#28310;&#20633;">&#20316;&#26989;&#28310;&#20633;<a class="anchor-link" href="#&#20316;&#26989;&#28310;&#20633;"> </a></h2><h3 id="AWS&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;&#12398;&#20316;&#25104;">AWS&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;&#12398;&#20316;&#25104;<a class="anchor-link" href="#AWS&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;&#12398;&#20316;&#25104;"> </a></h3><p>Botoを使用するには、事前にAWSのアクセスキーを用意する必要があります。</p>
+<h2 id="このnotebookは......">
+<a class="anchor" href="#%E3%81%93%E3%81%AEnotebook%E3%81%AF......" aria-hidden="true"><span class="octicon octicon-link"></span></a>このnotebookは......<a class="anchor-link" href="#%E3%81%93%E3%81%AEnotebook%E3%81%AF......"> </a>
+</h2>
+<p>Amazon Web Services (AWS)のPython向けSDKであるBotoをGoogleColaboratoryから使用するサンプルです。</p>
+<p>Botoの詳細は、 <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/index.html">公式ドキュメント</a> を参照してください。</p>
+<p>このNotebookを実行するには、Amazon web service(AWS)のアカウントが必要です。 AWSの利用にはクレジットカード等の登録が必要な場合があります。</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="作業準備">
+<a class="anchor" href="#%E4%BD%9C%E6%A5%AD%E6%BA%96%E5%82%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>作業準備<a class="anchor-link" href="#%E4%BD%9C%E6%A5%AD%E6%BA%96%E5%82%99"> </a>
+</h2>
+<h3 id="AWSアクセスキーの作成">
+<a class="anchor" href="#AWS%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%82%AD%E3%83%BC%E3%81%AE%E4%BD%9C%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>AWSアクセスキーの作成<a class="anchor-link" href="#AWS%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%82%AD%E3%83%BC%E3%81%AE%E4%BD%9C%E6%88%90"> </a>
+</h3>
+<p>Botoを使用するには、事前にAWSのアクセスキーを用意する必要があります。</p>
 <p>アクセスキー管理方法は様々ありますが、AWS IAMのユーザー <a href="https://console.aws.amazon.com/iam/home?region=us-west-2#/users">https://console.aws.amazon.com/iam/home?region=us-west-2#/users</a> からNotebook用のユーザーを作成する方法があります。万が一アクセスキーが漏れた場合に備えて、権限を最小限に、いつでも無効化できるように設定する必要があります。</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#12452;&#12531;&#12473;&#12488;&#12540;&#12523;">&#12452;&#12531;&#12473;&#12488;&#12540;&#12523;<a class="anchor-link" href="#&#12452;&#12531;&#12473;&#12488;&#12540;&#12523;"> </a></h2><p>Boto公式ドキュメントの <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#installation">Installation</a> を参考に、GoogleColaboratoryのラインタイム環境へ、boto3をインストールします。</p>
+<h2 id="インストール">
+<a class="anchor" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>インストール<a class="anchor-link" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB"> </a>
+</h2>
+<p>Boto公式ドキュメントの <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#installation">Installation</a> を参考に、GoogleColaboratoryのラインタイム環境へ、boto3をインストールします。</p>
 
 </div>
 </div>
@@ -179,7 +230,7 @@ Collecting s3transfer&lt;0.4.0,&gt;=0.3.0
 Collecting jmespath&lt;1.0.0,&gt;=0.7.1
   Downloading https://files.pythonhosted.org/packages/07/cb/5f001272b6faeb23c1c9e0acc04d48eaaf5c862c17709d20e3469c6e0139/jmespath-0.10.0-py2.py3-none-any.whl
 Requirement already satisfied: python-dateutil&lt;3.0.0,&gt;=2.1 in /usr/local/lib/python3.6/dist-packages (from botocore&lt;1.19.0,&gt;=1.18.16-&gt;boto3) (2.8.1)
-Requirement already satisfied: urllib3&lt;1.26,&gt;=1.20; python_version != &#34;3.4&#34; in /usr/local/lib/python3.6/dist-packages (from botocore&lt;1.19.0,&gt;=1.18.16-&gt;boto3) (1.24.3)
+Requirement already satisfied: urllib3&lt;1.26,&gt;=1.20; python_version != "3.4" in /usr/local/lib/python3.6/dist-packages (from botocore&lt;1.19.0,&gt;=1.18.16-&gt;boto3) (1.24.3)
 Requirement already satisfied: six&gt;=1.5 in /usr/local/lib/python3.6/dist-packages (from python-dateutil&lt;3.0.0,&gt;=2.1-&gt;botocore&lt;1.19.0,&gt;=1.18.16-&gt;boto3) (1.15.0)
 Installing collected packages: jmespath, botocore, s3transfer, boto3
 Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer-0.3.3
@@ -193,9 +244,13 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="&#12467;&#12531;&#12501;&#12451;&#12464;&#12524;&#12540;&#12471;&#12519;&#12531;">&#12467;&#12531;&#12501;&#12451;&#12464;&#12524;&#12540;&#12471;&#12519;&#12531;<a class="anchor-link" href="#&#12467;&#12531;&#12501;&#12451;&#12464;&#12524;&#12540;&#12471;&#12519;&#12531;"> </a></h2><p>Botoを使用するためには、認証資格情報をセットアップする必要があります。</p>
+<h2 id="コンフィグレーション">
+<a class="anchor" href="#%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>コンフィグレーション<a class="anchor-link" href="#%E3%82%B3%E3%83%B3%E3%83%95%E3%82%A3%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3"> </a>
+</h2>
+<p>Botoを使用するためには、認証資格情報をセットアップする必要があります。</p>
 <p>Boto公式ドキュメントの <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#configuration">Configuration</a> には、AWSCLIを用いる方法と、<code>~/.aws/credentials</code>に設定を記述する方法が記載されていますが、 <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html#using-environment-variables">Using environment variables</a> によれば、環境変数に設定することも可能なので、このnotebookでは環境変数を設定することにします。</p>
 <p>なお、最低限設定すべき環境変数は、 <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#configuration">Configuration</a> の記述内容から、以下の3つと考えられます。</p>
 <ol>
@@ -209,9 +264,12 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;ID&#12434;&#35373;&#23450;&#12377;&#12427;">&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;ID&#12434;&#35373;&#23450;&#12377;&#12427;<a class="anchor-link" href="#&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;ID&#12434;&#35373;&#23450;&#12377;&#12427;"> </a></h3>
+<h3 id="アクセスキーIDを設定する">
+<a class="anchor" href="#%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%82%AD%E3%83%BCID%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>アクセスキーIDを設定する<a class="anchor-link" href="#%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%82%AD%E3%83%BCID%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B"> </a>
+</h3>
 </div>
 </div>
 </div>
@@ -225,7 +283,7 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">getpass</span>
 
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;AWS_ACCESS_KEY_ID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">()</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'AWS_ACCESS_KEY_ID'</span><span class="p">]</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -249,9 +307,12 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="&#12471;&#12540;&#12463;&#12524;&#12483;&#12488;&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;&#12434;&#35373;&#23450;&#12377;&#12427;">&#12471;&#12540;&#12463;&#12524;&#12483;&#12488;&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;&#12434;&#35373;&#23450;&#12377;&#12427;<a class="anchor-link" href="#&#12471;&#12540;&#12463;&#12524;&#12483;&#12488;&#12450;&#12463;&#12475;&#12473;&#12461;&#12540;&#12434;&#35373;&#23450;&#12377;&#12427;"> </a></h3>
+<h3 id="シークレットアクセスキーを設定する">
+<a class="anchor" href="#%E3%82%B7%E3%83%BC%E3%82%AF%E3%83%AC%E3%83%83%E3%83%88%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%82%AD%E3%83%BC%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>シークレットアクセスキーを設定する<a class="anchor-link" href="#%E3%82%B7%E3%83%BC%E3%82%AF%E3%83%AC%E3%83%83%E3%83%88%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%82%AD%E3%83%BC%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B"> </a>
+</h3>
 </div>
 </div>
 </div>
@@ -262,7 +323,7 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;AWS_SECRET_ACCESS_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'AWS_SECRET_ACCESS_KEY'</span><span class="p">]</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -286,9 +347,12 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="&#12487;&#12501;&#12457;&#12523;&#12488;&#12522;&#12540;&#12472;&#12519;&#12531;&#12434;&#35373;&#23450;&#12377;&#12427;">&#12487;&#12501;&#12457;&#12523;&#12488;&#12522;&#12540;&#12472;&#12519;&#12531;&#12434;&#35373;&#23450;&#12377;&#12427;<a class="anchor-link" href="#&#12487;&#12501;&#12457;&#12523;&#12488;&#12522;&#12540;&#12472;&#12519;&#12531;&#12434;&#35373;&#23450;&#12377;&#12427;"> </a></h3>
+<h3 id="デフォルトリージョンを設定する">
+<a class="anchor" href="#%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%83%AA%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>デフォルトリージョンを設定する<a class="anchor-link" href="#%E3%83%87%E3%83%95%E3%82%A9%E3%83%AB%E3%83%88%E3%83%AA%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B"> </a>
+</h3>
 </div>
 </div>
 </div>
@@ -299,7 +363,7 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;AWS_DEFAULT_REGION&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ap-northeast-1&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'AWS_DEFAULT_REGION'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'ap-northeast-1'</span>
 </pre></div>
 
     </div>
@@ -309,14 +373,19 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="boto3&#12434;&#20351;&#29992;&#12375;&#12390;&#12415;&#12427;">boto3&#12434;&#20351;&#29992;&#12375;&#12390;&#12415;&#12427;<a class="anchor-link" href="#boto3&#12434;&#20351;&#29992;&#12375;&#12390;&#12415;&#12427;"> </a></h1><p>公式ドキュメントの <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#using-boto3">Using Boto3</a> を参考に、Boto3を使ってみる</p>
+<h1 id="boto3を使用してみる">
+<a class="anchor" href="#boto3%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>boto3を使用してみる<a class="anchor-link" href="#boto3%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%E3%81%BF%E3%82%8B"> </a>
+</h1>
+<p>公式ドキュメントの <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html#using-boto3">Using Boto3</a> を参考に、Boto3を使ってみる</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>boto3をインポートし、使用するサービスとしてS3を指定する</p>
 
@@ -332,7 +401,7 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
 
-<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">&#39;s3&#39;</span><span class="p">)</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s1">'s3'</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -342,7 +411,8 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>S3の全てのバケット名を出力する</p>
 
@@ -381,7 +451,8 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Using Boto3では、ファイルをバケットへputしているが、その前に現在のバケット内のオブジェクトを確認しておく</p>
 <p>Using Boto3に書かれていないS3リソースについては、Boto3ドキュメントの <a href="https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#s3">S3</a> を参照のこと</p>
@@ -396,7 +467,7 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bucket</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">Bucket</span><span class="p">(</span><span class="s1">&#39;mybucket-202007211923&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bucket</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">Bucket</span><span class="p">(</span><span class="s1">'mybucket-202007211923'</span><span class="p">)</span>
 <span class="nb">list</span><span class="p">(</span><span class="n">bucket</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 </pre></div>
 
@@ -423,14 +494,16 @@ Successfully installed boto3-1.15.16 botocore-1.18.16 jmespath-0.10.0 s3transfer
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>オブジェクトは何もないようだ</p>
 
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Using Boto3と同じように、バケットへファイルをputする。</p>
 <p>ただし、Colaboratory環境へ画像ファイルをアップロードするのが面倒なので、今回はテキストファイルをputすることにする</p>
@@ -479,8 +552,8 @@ drwxr-xr-x 1 root root 4096 Oct  5 16:31 sample_data
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;foo.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
-  <span class="n">bucket</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span><span class="n">Key</span><span class="o">=</span><span class="s1">&#39;foo.txt&#39;</span><span class="p">,</span> <span class="n">Body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'foo.txt'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
+  <span class="n">bucket</span><span class="o">.</span><span class="n">put_object</span><span class="p">(</span><span class="n">Key</span><span class="o">=</span><span class="s1">'foo.txt'</span><span class="p">,</span> <span class="n">Body</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -490,7 +563,8 @@ drwxr-xr-x 1 root root 4096 Oct  5 16:31 sample_data
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>ファイルがputできたか確認する</p>
 
@@ -519,7 +593,7 @@ drwxr-xr-x 1 root root 4096 Oct  5 16:31 sample_data
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[s3.ObjectSummary(bucket_name=&#39;mybucket-202007211923&#39;, key=&#39;foo.txt&#39;)]</pre>
+<pre>[s3.ObjectSummary(bucket_name='mybucket-202007211923', key='foo.txt')]</pre>
 </div>
 
 </div>
@@ -530,7 +604,8 @@ drwxr-xr-x 1 root root 4096 Oct  5 16:31 sample_data
 </div>
     
 
-<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>putできたようだ</p>
 <p>以上</p>
@@ -542,7 +617,7 @@ drwxr-xr-x 1 root root 4096 Oct  5 16:31 sample_data
 
 
 
-  </div><a class="u-url" href="/fastpages/2022/04/22/_boto3sample.html" hidden></a>
+  </div><a class="u-url" href="/fastpages/jupyter/boto3/2022/04/22/_launching_an_ec2_instance_from_colab_using_boto3.html" hidden></a>
 </article>
 
       </div>
