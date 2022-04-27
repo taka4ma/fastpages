@@ -1,9 +1,149 @@
-<h1 id="ansibletdd環境をtest-kitchen-serverspec-dockerで作る2015年10月版">AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)</h1>
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版) | fastpages</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。" />
+<meta property="og:description" content="この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。" />
+<link rel="canonical" href="https://taka4ma.github.io/fastpages/sqlite/amazon_linux2/2015/10/01/Creating-an-AnsibleTDD-environment.html" />
+<meta property="og:url" content="https://taka4ma.github.io/fastpages/sqlite/amazon_linux2/2015/10/01/Creating-an-AnsibleTDD-environment.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-10-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2015-10-01T00:00:00-05:00","datePublished":"2015-10-01T00:00:00-05:00","description":"この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。","headline":"AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/sqlite/amazon_linux2/2015/10/01/Creating-an-AnsibleTDD-environment.html"},"url":"https://taka4ma.github.io/fastpages/sqlite/amazon_linux2/2015/10/01/Creating-an-AnsibleTDD-environment.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/fastpages/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://taka4ma.github.io/fastpages/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/fastpages/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
 
-<p>これはtest-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順です。
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/fastpages/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/fastpages/about/">About Me</a><a class="page-link" href="/fastpages/search/">Search</a><a class="page-link" href="/fastpages/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)</h1><p class="page-description">この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2015-10-01T00:00:00-05:00" itemprop="datePublished">
+        Oct 1, 2015
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/fastpages/categories/#sqlite">sqlite</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/fastpages/categories/#amazon_linux2">amazon_linux2</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#ansibletdd環境をtest-kitchen-serverspec-dockerで作る2015年10月版">AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#この記事の目標">この記事の目標</a></li>
+<li class="toc-entry toc-h2"><a href="#前提条件等">前提条件等</a></li>
+<li class="toc-entry toc-h2"><a href="#本文">本文</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#プロジェクト用ディレクトリの作成">プロジェクト用ディレクトリの作成</a></li>
+<li class="toc-entry toc-h3"><a href="#test-kitchenインストール">test-kitchenインストール</a></li>
+<li class="toc-entry toc-h3"><a href="#test-kitchen初期化">test-kitchen初期化</a></li>
+<li class="toc-entry toc-h3"><a href="#kitchen-ansibleとserverspecインストール">kitchen-ansibleとServerspecインストール</a></li>
+<li class="toc-entry toc-h3"><a href="#kitchenymlの設定">.kitchen.ymlの設定</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#driver">driver</a></li>
+<li class="toc-entry toc-h4"><a href="#provisioner">provisioner</a></li>
+<li class="toc-entry toc-h4"><a href="#platforms">platforms</a></li>
+<li class="toc-entry toc-h4"><a href="#verifier">verifier</a></li>
+<li class="toc-entry toc-h4"><a href="#suites">suites</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#serverspecの初期化">Serverspecの初期化</a></li>
+<li class="toc-entry toc-h3"><a href="#仮のsiteyml作成">仮のsite.yml作成</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#ansible-playbookの実装">Ansible playbookの実装</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#まとめ">まとめ</a></li>
+<li class="toc-entry toc-h2"><a href="#appendix">appendix</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#docker-imageを指定したい場合">Docker imageを指定したい場合</a></li>
+<li class="toc-entry toc-h3"><a href="#複数のホストグループに対応したい場合">複数のホストグループに対応したい場合</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#参考資料">参考資料</a></li>
+</ul>
+</li>
+</ul><h1 id="ansibletdd環境をtest-kitchen-serverspec-dockerで作る2015年10月版">
+<a class="anchor" href="#ansibletdd%E7%92%B0%E5%A2%83%E3%82%92test-kitchen-serverspec-docker%E3%81%A7%E4%BD%9C%E3%82%8B2015%E5%B9%B410%E6%9C%88%E7%89%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)</h1>
+
+<p>この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。
 Ubuntu14,CentOS7でApache2をインストールし、サービスを起動し、ブート時のサービス自動起動を設定するベストプラクティス構成<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>のAnsible playbookを例として取りあげます。</p>
 
-<h2 id="この記事の目標">この記事の目標</h2>
+<h2 id="この記事の目標">
+<a class="anchor" href="#%E3%81%93%E3%81%AE%E8%A8%98%E4%BA%8B%E3%81%AE%E7%9B%AE%E6%A8%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>この記事の目標</h2>
 
 <p>AnsibleのTDD環境として、test-kitchenで次のことが出来る環境を作ります。</p>
 
@@ -13,7 +153,8 @@ Ubuntu14,CentOS7でApache2をインストールし、サービスを起動し、
   <li>各コンテナのプロビジョニング結果をServerspecで検証</li>
 </ul>
 
-<h2 id="前提条件等">前提条件等</h2>
+<h2 id="前提条件等">
+<a class="anchor" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6%E7%AD%89" aria-hidden="true"><span class="octicon octicon-link"></span></a>前提条件等</h2>
 
 <p>この記事の前提条件は以下のとおりです。</p>
 
@@ -49,9 +190,11 @@ https://github.com/takasix/vagrant_kitchen_ansible</p>
 
 <p>(元々別の用があって作ったものなので、バージョン指定が入っておらず、この記事の検証に使用した環境と全く同じ環境は構築されません。追記時点では記事の内容が全て動くことを確認済みです。)</p>
 
-<h2 id="本文">本文</h2>
+<h2 id="本文">
+<a class="anchor" href="#%E6%9C%AC%E6%96%87" aria-hidden="true"><span class="octicon octicon-link"></span></a>本文</h2>
 
-<h3 id="プロジェクト用ディレクトリの作成">プロジェクト用ディレクトリの作成</h3>
+<h3 id="プロジェクト用ディレクトリの作成">
+<a class="anchor" href="#%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E7%94%A8%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E3%81%AE%E4%BD%9C%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>プロジェクト用ディレクトリの作成</h3>
 
 <p>プロジェクト用のディレクトリを作成します。これ以降の手順はこのディレクトリをベースに行います。</p>
 
@@ -59,7 +202,8 @@ https://github.com/takasix/vagrant_kitchen_ansible</p>
 $ cd ~/ansibletdd
 </code></pre>
 
-<h3 id="test-kitchenインストール">test-kitchenインストール</h3>
+<h3 id="test-kitchenインストール">
+<a class="anchor" href="#test-kitchen%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>test-kitchenインストール</h3>
 
 <p>プロジェクトディレクトリにGemfileを作成し、bundlerを使ってtest-kitchenをインストールします。</p>
 
@@ -86,7 +230,8 @@ Bundle complete! 1 Gemfile dependency, 7 gems now installed.
 Use `bundle show [gemname]` to see where a bundled gem is installed.
 </code></pre>
 
-<h3 id="test-kitchen初期化">test-kitchen初期化</h3>
+<h3 id="test-kitchen初期化">
+<a class="anchor" href="#test-kitchen%E5%88%9D%E6%9C%9F%E5%8C%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>test-kitchen初期化</h3>
 
 <p><code class="language-plaintext highlighter-rouge">kitchen init</code>コマンドでtest-kitchenを初期化します。このとき–driver(または-D)オプションでドライバを、–provisioner(または-P)オプションでプロビジョナを指定できます。
 今回は、テストを行う環境にDockerを使うのでドライバに”kitchen-docker”、プロビジョニングにはAnsibleを使うのでプロビジョナに”ansible_playbook”をそれぞれ指定します。</p>
@@ -134,7 +279,8 @@ gem <span class="s1">'test-kitchen'</span>
 gem <span class="s2">"kitchen-docker"</span> 
 </code></pre></div></div>
 
-<h3 id="kitchen-ansibleとserverspecインストール">kitchen-ansibleとServerspecインストール</h3>
+<h3 id="kitchen-ansibleとserverspecインストール">
+<a class="anchor" href="#kitchen-ansible%E3%81%A8serverspec%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>kitchen-ansibleとServerspecインストール</h3>
 
 <p><code class="language-plaintext highlighter-rouge">kitchen init</code>によって変更されたGemfileにkitchen-ansibleとserverspecを加え、bundlerを使ってインストールします。</p>
 
@@ -180,7 +326,8 @@ Bundle complete! 4 Gemfile dependencies, 26 gems now installed.
 Use `bundle show [gemname]` to see where a bundled gem is installed.
 </code></pre>
 
-<h3 id="kitchenymlの設定">.kitchen.ymlの設定</h3>
+<h3 id="kitchenymlの設定">
+<a class="anchor" href="#kitchenyml%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>.kitchen.ymlの設定</h3>
 
 <p><code class="language-plaintext highlighter-rouge">kitchen init</code>で作成された.kitchen.ymlを編集しtest-kitchenの設定を行います。
 (編集が終わった.kitchen.ymlはこのセクションの一番最後にあります。)</p>
@@ -202,7 +349,8 @@ suites:
     attributes:
 </code></pre>
 
-<h4 id="driver">driver</h4>
+<h4 id="driver">
+<a class="anchor" href="#driver" aria-hidden="true"><span class="octicon octicon-link"></span></a>driver</h4>
 
 <p>driverは、変更する必要はありません。</p>
 
@@ -210,7 +358,8 @@ suites:
   name: docker
 </code></pre>
 
-<h4 id="provisioner">provisioner</h4>
+<h4 id="provisioner">
+<a class="anchor" href="#provisioner" aria-hidden="true"><span class="octicon octicon-link"></span></a>provisioner</h4>
 
 <p>provisionerにはプロビジョナーのオプションを以下のように設定します。
 なお、ansible_playbookのオプションは<a href="https://github.com/neillturner/kitchen-ansible/blob/master/provisioner_options.md">Provisioner Options</a>も参照してください。</p>
@@ -273,7 +422,8 @@ suites:
   </li>
 </ol>
 
-<h4 id="platforms">platforms</h4>
+<h4 id="platforms">
+<a class="anchor" href="#platforms" aria-hidden="true"><span class="octicon octicon-link"></span></a>platforms</h4>
 
 <p>platformsにはテスト環境を以下のように設定します。</p>
 
@@ -287,7 +437,8 @@ suites:
 
 <p>本記事執筆時点のcentos:centos7イメージでは、systemctlを使用するためには特権モードかつ起動コマンドを/sbin/initにしなければならない<sup id="fnref:3" role="doc-noteref"><a href="#fn:3" class="footnote" rel="footnote">3</a></sup>ので、そのためのオプションを追加します。</p>
 
-<h4 id="verifier">verifier</h4>
+<h4 id="verifier">
+<a class="anchor" href="#verifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>verifier</h4>
 
 <p>.kitchen.ymlにverifierを追加しテストツールのオプションを以下のように設定します。</p>
 
@@ -299,7 +450,8 @@ suites:
 デフォルトは<code class="language-plaintext highlighter-rouge">/opt/chef/embedded/bin</code>で、これはChefに同梱されるrubyのディレクトリを指しています。
 今回はprovisioner設定でChefを入れず、代わりにrubyをインストールするため、<code class="language-plaintext highlighter-rouge">ruby_bindir</code>にはそちらのパスを設定します。</p>
 
-<h4 id="suites">suites</h4>
+<h4 id="suites">
+<a class="anchor" href="#suites" aria-hidden="true"><span class="octicon octicon-link"></span></a>suites</h4>
 
 <p>suitesにはテストスイートを以下のように設定します。</p>
 
@@ -356,7 +508,8 @@ default-centos-71    Docker  AnsiblePlaybook  Busser    Ssh        &lt;Not Creat
 
 <p>テスト環境は[テストスイート名]-[プラットフォーム名]になり、platformとsuiteの組み合わせになります。</p>
 
-<h3 id="serverspecの初期化">Serverspecの初期化</h3>
+<h3 id="serverspecの初期化">
+<a class="anchor" href="#serverspec%E3%81%AE%E5%88%9D%E6%9C%9F%E5%8C%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>Serverspecの初期化</h3>
 
 <p>test-kitchenのルール<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">4</a></sup>にしたがって、<code class="language-plaintext highlighter-rouge">test/integration/default</code>ディレクトリへServerspecファイルを配置します。
 (<code class="language-plaintext highlighter-rouge">test/integration/default</code>のdefaultの部分は.kitchen.ymlのsuitesのnameに対応します。テストスイートの名前を変更している場合はServerspecを配置するパスも変更しなければなりません。)</p>
@@ -436,7 +589,8 @@ gem 'serverspec'
 
 <p>参考:<a href="https://github.com/test-kitchen/busser-serverspec/issues/28">Rake dependency missing for older rubies · Issue #28</a></p>
 
-<h3 id="仮のsiteyml作成">仮のsite.yml作成</h3>
+<h3 id="仮のsiteyml作成">
+<a class="anchor" href="#%E4%BB%AE%E3%81%AEsiteyml%E4%BD%9C%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>仮のsite.yml作成</h3>
 
 <p>以上でTDDの準備が出来ました。と、言いたいところですが、この状態で<code class="language-plaintext highlighter-rouge">kitchen test</code>コマンドを叩くとエラーが発生します。</p>
 
@@ -494,7 +648,8 @@ Preparing playbook
 <p>これでようやくTDDの準備が出来ました。
 あとは、全てのテストが成功するよう、「書く -&gt; テスト」を繰り返しながらAnsible playbookを書いていけばOKです。</p>
 
-<h4 id="ansible-playbookの実装">Ansible playbookの実装</h4>
+<h4 id="ansible-playbookの実装">
+<a class="anchor" href="#ansible-playbook%E3%81%AE%E5%AE%9F%E8%A3%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ansible playbookの実装</h4>
 
 <p>TDD環境が出来たので、あとはPlay bookを実装していくだけです。
 書き方の詳細は本記事の趣旨から外れるのでGoogle先生に聞いてもらうとして、とりあえず全てのテストが通るPlay bookを置いておきます。</p>
@@ -565,14 +720,17 @@ Preparing playbook
 ~~~　後略 ~~~
 </code></pre>
 
-<h2 id="まとめ">まとめ</h2>
+<h2 id="まとめ">
+<a class="anchor" href="#%E3%81%BE%E3%81%A8%E3%82%81" aria-hidden="true"><span class="octicon octicon-link"></span></a>まとめ</h2>
 
 <p>AnsibleをTDDするための環境構築の一連の手順を追いかけました。
 test-kitchenを使ってトライ&amp;エラーを簡単に行えるTDD環境を用意するとAnsible(やChef)の開発をサクサク進められる用になりますが、デフォルト設定では動かない箇所などハマりどころがいくつかあるので注意が必要です。ハマった場合はログと関連ドキュメントを読んで頑張りましょう。</p>
 
-<h2 id="appendix">appendix</h2>
+<h2 id="appendix">
+<a class="anchor" href="#appendix" aria-hidden="true"><span class="octicon octicon-link"></span></a>appendix</h2>
 
-<h3 id="docker-imageを指定したい場合">Docker imageを指定したい場合</h3>
+<h3 id="docker-imageを指定したい場合">
+<a class="anchor" href="#docker-image%E3%82%92%E6%8C%87%E5%AE%9A%E3%81%97%E3%81%9F%E3%81%84%E5%A0%B4%E5%90%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>Docker imageを指定したい場合</h3>
 
 <p>kitchen-docerは<code class="language-plaintext highlighter-rouge">Kitchen::Driver::Docker.default_image</code>によってplatform.nameからテスト環境のベースイメージのタグを生成しますが、任意のタグを指定することも出来ます。
 その場合は、.kitchen.ymlを以下のように変更します。</p>
@@ -588,7 +746,8 @@ test-kitchenを使ってトライ&amp;エラーを簡単に行えるTDD環境を
        run_command: /sbin/init; sleep 3
 </code></pre>
 
-<h3 id="複数のホストグループに対応したい場合">複数のホストグループに対応したい場合</h3>
+<h3 id="複数のホストグループに対応したい場合">
+<a class="anchor" href="#%E8%A4%87%E6%95%B0%E3%81%AE%E3%83%9B%E3%82%B9%E3%83%88%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%97%E3%81%9F%E3%81%84%E5%A0%B4%E5%90%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>複数のホストグループに対応したい場合</h3>
 
 <p>Play bookにホストグループ(例えば、apservers)を追加定義したい場合は、以下のようにします。</p>
 
@@ -655,7 +814,8 @@ test</span>
 
 <p>以上で共通のファイルをhelpersへ移動し、各テストスイートに必要なファイル・ディレクトリを用意できました。あとはapservers_spec.rbファイルをapserversグループに適した形に書き換えれば完了です。</p>
 
-<h2 id="参考資料">参考資料</h2>
+<h2 id="参考資料">
+<a class="anchor" href="#%E5%8F%82%E8%80%83%E8%B3%87%E6%96%99" aria-hidden="true"><span class="octicon octicon-link"></span></a>参考資料</h2>
 
 <ul>
   <li><a href="http://qiita.com/r_takaishi/items/f3e68e3f7072b9327c3f">Ansibleのテストをtest-kitchenとServerspec、dockerで行う - Qiita</a></li>
@@ -673,16 +833,50 @@ test</span>
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:1" role="doc-endnote">
-      <p><a href="http://docs.ansible.com/ansible/playbooks_best_practices.html">Best Practices — Ansible Documentation</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a> <a href="#fnref:1:1" class="reversefootnote" role="doc-backlink">&#8617;<sup>2</sup></a></p>
+      <p><a href="http://docs.ansible.com/ansible/playbooks_best_practices.html">Best Practices — Ansible Documentation</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">↩</a> <a href="#fnref:1:1" class="reversefootnote" role="doc-backlink">↩<sup>2</sup></a></p>
     </li>
     <li id="fn:2" role="doc-endnote">
-      <p><a href="http://docs.ansible.com/ansible/playbooks_best_practices.html#top-level-playbooks-are-separated-by-role">Best Practices — Ansible Documentation#top-level-playbooks-are-separated-by-role</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://docs.ansible.com/ansible/playbooks_best_practices.html#top-level-playbooks-are-separated-by-role">Best Practices — Ansible Documentation#top-level-playbooks-are-separated-by-role</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
     <li id="fn:3" role="doc-endnote">
-      <p><a href="http://qiita.com/nmatsui/items/7a8a3cdd7cc50169627f#test-kitchen%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90">Chef &amp; Test Kitchen+Serverspec &amp; Docker &amp; PackerによるInfrastructure as Code事始め - Qiita</a> <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://qiita.com/nmatsui/items/7a8a3cdd7cc50169627f#test-kitchen%E3%81%AE%E8%A8%AD%E5%AE%9A%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90">Chef &amp; Test Kitchen+Serverspec &amp; Docker &amp; PackerによるInfrastructure as Code事始め - Qiita</a> <a href="#fnref:3" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
     <li id="fn:4" role="doc-endnote">
-      <p><a href="http://kitchen.ci/docs/getting-started/writing-test">Writing a Test - KitchenCI</a> <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://kitchen.ci/docs/getting-started/writing-test">Writing a Test - KitchenCI</a> <a href="#fnref:4" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
   </ol>
 </div>
+
+  </div><a class="u-url" href="/fastpages/sqlite/amazon_linux2/2015/10/01/Creating-an-AnsibleTDD-environment.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/fastpages/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/fastpages/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/fastpages/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
