@@ -1,6 +1,14 @@
+---
+toc: true
+layout: post
+description: この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。
+categories: [sqlite, amazon_linux2]
+title: AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)
+---
+
 # AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)
 
-これはtest-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順です。
+この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。
 Ubuntu14,CentOS7でApache2をインストールし、サービスを起動し、ブート時のサービス自動起動を設定するベストプラクティス構成[^1]のAnsible playbookを例として取りあげます。
 
 ## この記事の目標
