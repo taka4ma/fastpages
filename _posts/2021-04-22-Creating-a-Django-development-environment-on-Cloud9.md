@@ -8,11 +8,11 @@ title: Cloud9にDjango開発環境を作る
 
 # Cloud9にDjango開発環境を作る
 
-この記事では、[Cloud9でPython開発環境を作る](https://taka4ma.github.io/contents/0007/0007.html)でCloud9に作ったPython開発環境にDjangoの開発環境を作っていく。
+この記事では、[Cloud9でPython開発環境を作る](https://taka4ma.github.io/fastpages/cloud9/python/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html)でCloud9に作ったPython開発環境にDjangoの開発環境を作っていく。
 
 ## 仮想環境を起動する
 
-[Cloud9でPython開発環境を作る](https://taka4ma.github.io/contents/0007/0007.html) で `~/environment` ディレクトリに`myenv`という名前の仮想環境を作成した。その仮想環境を起動する
+[Cloud9でPython開発環境を作る](https://taka4ma.github.io/fastpages/cloud9/python/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html) で `~/environment` ディレクトリに`myenv`という名前の仮想環境を作成した。その仮想環境を起動する
 
 ```
 cd ~/environment
