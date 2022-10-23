@@ -1,3 +1,11 @@
+---
+toc: true
+layout: post
+description: test-kitchenでkitchen-dockerを使う場合に.kitchen.ymlでテストインスタンスのベースイメージを設定する方法
+categories: [kitchen-docker,]
+title: kitchen-docker用Dockerfile
+---
+
 # kitchen-docker用Dockerfile
 
 test-kitchenでkitchen-dockerを使う場合、.kitchen.ymlでテストインスタンスのベースイメージを設定する方法として、以下の3種類があります。
