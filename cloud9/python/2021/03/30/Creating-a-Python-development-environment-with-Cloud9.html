@@ -8,17 +8,17 @@
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="Cloud9でPython開発環境を作る" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
-<meta property="og:description" content="An easy to use blogging platform with support for Jupyter Notebooks." />
-<link rel="canonical" href="https://taka4ma.github.io/fastpages/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html" />
-<meta property="og:url" content="https://taka4ma.github.io/fastpages/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html" />
+<meta name="description" content="この記事は、LinuxのPython開発環境を簡単に用意する手段としてCloud9を利用する手順です。" />
+<meta property="og:description" content="この記事は、LinuxのPython開発環境を簡単に用意する手段としてCloud9を利用する手順です。" />
+<link rel="canonical" href="https://taka4ma.github.io/fastpages/cloud9/python/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html" />
+<meta property="og:url" content="https://taka4ma.github.io/fastpages/cloud9/python/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html" />
 <meta property="og:site_name" content="fastpages" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-03-30T00:00:00-05:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Cloud9でPython開発環境を作る" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-03-30T00:00:00-05:00","datePublished":"2021-03-30T00:00:00-05:00","description":"An easy to use blogging platform with support for Jupyter Notebooks.","headline":"Cloud9でPython開発環境を作る","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html"},"url":"https://taka4ma.github.io/fastpages/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-03-30T00:00:00-05:00","datePublished":"2021-03-30T00:00:00-05:00","description":"この記事は、LinuxのPython開発環境を簡単に用意する手段としてCloud9を利用する手順です。","headline":"Cloud9でPython開発環境を作る","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/cloud9/python/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html"},"url":"https://taka4ma.github.io/fastpages/cloud9/python/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/fastpages/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://taka4ma.github.io/fastpages/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/fastpages/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -78,6 +78,7 @@ window.onload = wrap_img;
 
   <header class="post-header">
     <h1 class="post-title p-name" itemprop="name headline">Cloud9でPython開発環境を作る</h1>
+<p class="page-description">この記事は、LinuxのPython開発環境を簡単に用意する手段としてCloud9を利用する手順です。</p>
 <p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-03-30T00:00:00-05:00" itemprop="datePublished">
         Mar 30, 2021
       </time>
@@ -89,39 +90,30 @@ window.onload = wrap_img;
 </span></p>
 
     
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i> 
+      
+        <a class="category-tags-link" href="/fastpages/categories/#cloud9">cloud9</a>
+         
+      
+        <a class="category-tags-link" href="/fastpages/categories/#python">python</a>
+        
+      
+      </p>
+    
 
     
-      
-        <div class="pb-5 d-flex flex-justify-center">
-          <div class="px-2">
-
-    <a href="https://github.com/taka4ma/fastpages/tree/master/_notebooks/2021-03-30-Creating-a-Python-development-environment-with-Cloud9.ipynb" role="button" target="_blank">
-<img class="notebook-badge-image" src="/fastpages/assets/badges/github.svg" alt="View On GitHub">
-    </a>
-</div>
-
-          <div class="px-2">
-    <a href="https://mybinder.org/v2/gh/taka4ma/fastpages/master?filepath=_notebooks%2F2021-03-30-Creating-a-Python-development-environment-with-Cloud9.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/fastpages/assets/badges/binder.svg" alt="Open In Binder">
-    </a>
-</div>
-
-          <div class="px-2">
-    <a href="https://colab.research.google.com/github/taka4ma/fastpages/blob/master/_notebooks/2021-03-30-Creating-a-Python-development-environment-with-Cloud9.ipynb" target="_blank">
-        <img class="notebook-badge-image" src="/fastpages/assets/badges/colab.svg" alt="Open In Colab">
-    </a>
-</div>
-          <div class="px-2">
-  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Ftaka4ma%2Ffastpages%2Fblob%2Fmaster%2F_notebooks%2F2021-03-30-Creating-a-Python-development-environment-with-Cloud9.ipynb" target="_blank">
-      <img class="notebook-badge-image" src="/fastpages/assets/badges/deepnote.svg" alt="Launch in Deepnote">
-  </a>
-</div>
-
-        </div>
       </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <!--
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#%E5%88%9D%E3%82%81%E3%81%AB">初めに </a></li>
+<li class="toc-entry toc-h2"><a href="#Cloud9%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E7%AB%8B%E3%81%A1%E4%B8%8A%E3%81%92%E3%82%8B">Cloud9インスタンスを立ち上げる </a></li>
+<li class="toc-entry toc-h2"><a href="#Cloud9%E7%92%B0%E5%A2%83%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B">Cloud9環境を確認する </a></li>
+<li class="toc-entry toc-h2"><a href="#Python%E3%81%A8pip%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B">Pythonとpipのバージョンを確認する </a></li>
+<li class="toc-entry toc-h2"><a href="#pip%E3%82%92%E6%9B%B4%E6%96%B0%E3%81%99%E3%82%8B">pipを更新する </a></li>
+<li class="toc-entry toc-h2"><a href="#Virtualenv%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E8%B5%B7%E5%8B%95%E3%81%99%E3%82%8B">Virtualenvを作成し起動する </a></li>
+</ul>
+<!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
 #################################################
@@ -133,10 +125,12 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="初めに">初めに<a class="anchor-link" href="#%E5%88%9D%E3%82%81%E3%81%AB"> </a>
+<h2 id="初めに">
+<a class="anchor" href="#%E5%88%9D%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>初めに<a class="anchor-link" href="#%E5%88%9D%E3%82%81%E3%81%AB"> </a>
 </h2>
 <p>この記事は、LinuxのPython開発環境を簡単に用意する手段としてCloud9を利用する手順です。</p>
-<h2 id="Cloud9インスタンスを立ち上げる">Cloud9インスタンスを立ち上げる<a class="anchor-link" href="#Cloud9%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E7%AB%8B%E3%81%A1%E4%B8%8A%E3%81%92%E3%82%8B"> </a>
+<h2 id="Cloud9インスタンスを立ち上げる">
+<a class="anchor" href="#Cloud9%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E7%AB%8B%E3%81%A1%E4%B8%8A%E3%81%92%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cloud9インスタンスを立ち上げる<a class="anchor-link" href="#Cloud9%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%82%92%E7%AB%8B%E3%81%A1%E4%B8%8A%E3%81%92%E3%82%8B"> </a>
 </h2>
 <ol>
 <li>
@@ -203,7 +197,8 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Cloud9環境を確認する">Cloud9環境を確認する<a class="anchor-link" href="#Cloud9%E7%92%B0%E5%A2%83%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B"> </a>
+<h2 id="Cloud9環境を確認する">
+<a class="anchor" href="#Cloud9%E7%92%B0%E5%A2%83%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cloud9環境を確認する<a class="anchor-link" href="#Cloud9%E7%92%B0%E5%A2%83%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B"> </a>
 </h2>
 <p>Cloud9が起動したら、環境の確認を行います。Cloud9はインスタンスをデプロイするタイミングにより使用されるイメージが異なるので、デプロイしたら確認したほうが良いでしょう。</p>
 <p>Cloud9のデフォルトでは、下部にターミナルウィンドウが表示されています。これはCloud9を実行しているEC2インスタンスに接続されています。この記事では、Cloud9のPlatformにAmazon Linux2を選択したので、ターミナルウィンドウからLinuxコマンドを入力して、Cloud9を実行しているインスタンスを操作することができます。</p>
@@ -244,7 +239,8 @@ HOME_URL="https://amazonlinux.com/"</code></pre>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Pythonとpipのバージョンを確認する">Pythonとpipのバージョンを確認する<a class="anchor-link" href="#Python%E3%81%A8pip%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B"> </a>
+<h2 id="Pythonとpipのバージョンを確認する">
+<a class="anchor" href="#Python%E3%81%A8pip%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pythonとpipのバージョンを確認する<a class="anchor-link" href="#Python%E3%81%A8pip%E3%81%AE%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B"> </a>
 </h2>
 <p>Pythonとpipバージョンも確認しておきます。同じく、記事作成時点では以下のようになっていました。</p>
 
@@ -263,7 +259,8 @@ pip 9.0.3 from /usr/lib/python3.7/site-packages (python 3.7)</code></pre>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="pipを更新する">pipを更新する<a class="anchor-link" href="#pip%E3%82%92%E6%9B%B4%E6%96%B0%E3%81%99%E3%82%8B"> </a>
+<h2 id="pipを更新する">
+<a class="anchor" href="#pip%E3%82%92%E6%9B%B4%E6%96%B0%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>pipを更新する<a class="anchor-link" href="#pip%E3%82%92%E6%9B%B4%E6%96%B0%E3%81%99%E3%82%8B"> </a>
 </h2>
 <p>仮想環境を起動したら、pipを最新バージョンに更新します。<br>
 記事作成時点では、pipのバージョンは20.1.1でした。</p>
@@ -286,7 +283,8 @@ pip 21.0.1 from /home/ec2-user/.local/lib/python3.7/site-packages/pip (python 3.
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Virtualenvを作成し起動する">Virtualenvを作成し起動する<a class="anchor-link" href="#Virtualenv%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E8%B5%B7%E5%8B%95%E3%81%99%E3%82%8B"> </a>
+<h2 id="Virtualenvを作成し起動する">
+<a class="anchor" href="#Virtualenv%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E8%B5%B7%E5%8B%95%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>Virtualenvを作成し起動する<a class="anchor-link" href="#Virtualenv%E3%82%92%E4%BD%9C%E6%88%90%E3%81%97%E8%B5%B7%E5%8B%95%E3%81%99%E3%82%8B"> </a>
 </h2>
 <p>Python 3.3以降、標準機能であるvenvで仮想環境を作成することで、pipで導入するパッケージをプロジェクト毎に独立させることができます。</p>
 <p>Cloud9を利用する場合プロジェクト毎にインスタンスを分ければ仮想環境は必要ないように思えます。
@@ -364,7 +362,7 @@ $    # &lt;- 何も表示されない</code></pre>
 
 
   </div>
-<a class="u-url" href="/fastpages/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html" hidden></a>
+<a class="u-url" href="/fastpages/cloud9/python/2021/03/30/Creating-a-Python-development-environment-with-Cloud9.html" hidden></a>
 </article>
 
       </div>
