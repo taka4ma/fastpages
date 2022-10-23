@@ -1,3 +1,11 @@
+---
+toc: true
+layout: post
+description: k8sの概要
+categories: [k8s,]
+title: k8s概要
+---
+
 # k8s overview
 
 k8s = 複数のホストを束ねてDockerを利用するためのオーケストレーションツール
