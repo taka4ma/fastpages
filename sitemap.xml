@@ -13,14 +13,6 @@
 <lastmod>2016-03-01T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://taka4ma.github.io/fastpages/markdown/2020/01/14/test-markdown-post.html</loc>
-<lastmod>2020-01-14T00:00:00-06:00</lastmod>
-</url>
-<url>
-<loc>https://taka4ma.github.io/fastpages/jupyter/2020/02/20/test.html</loc>
-<lastmod>2020-02-20T00:00:00-06:00</lastmod>
-</url>
-<url>
 <loc>https://taka4ma.github.io/fastpages/k8s/2020/04/19/k8s-overview.html</loc>
 <lastmod>2020-04-19T00:00:00-05:00</lastmod>
 </url>
@@ -69,6 +61,9 @@
 <lastmod>2022-04-29T00:00:00-05:00</lastmod>
 </url>
 <url>
+<loc>https://taka4ma.github.io/fastpages/test/2020-01-14-test-markdown-post.html</loc>
+</url>
+<url>
 <loc>https://taka4ma.github.io/fastpages/about/</loc>
 </url>
 <url>
@@ -79,8 +74,5 @@
 </url>
 <url>
 <loc>https://taka4ma.github.io/fastpages/categories/</loc>
-</url>
-<url>
-<loc>https://taka4ma.github.io/fastpages/page2/</loc>
 </url>
 </urlset>
