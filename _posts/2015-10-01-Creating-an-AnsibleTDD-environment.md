@@ -2,7 +2,7 @@
 toc: true
 layout: post
 description: この記事は、test-kitchen, serverspec, DockerをつかってAnsibleのテスト駆動開発を行う環境を構築する手順をまとめたものです。
-categories: [sqlite, amazon_linux2]
+categories: [test-kitchen, ansible]
 title: AnsibleTDD環境をtest-kitchen, serverspec, Dockerで作る(2015年10月版)
 ---
 
