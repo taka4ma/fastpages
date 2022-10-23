@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>k8s概要 | fastpages</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="k8s概要" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="k8sの概要" />
+<meta property="og:description" content="k8sの概要" />
+<link rel="canonical" href="https://taka4ma.github.io/fastpages/k8s/2020/04/19/k8s-overview.html" />
+<meta property="og:url" content="https://taka4ma.github.io/fastpages/k8s/2020/04/19/k8s-overview.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-04-19T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="k8s概要" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-04-19T00:00:00-05:00","datePublished":"2020-04-19T00:00:00-05:00","description":"k8sの概要","headline":"k8s概要","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/k8s/2020/04/19/k8s-overview.html"},"url":"https://taka4ma.github.io/fastpages/k8s/2020/04/19/k8s-overview.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/fastpages/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://taka4ma.github.io/fastpages/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/fastpages/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/fastpages/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/fastpages/about/">About Me</a><a class="page-link" href="/fastpages/search/">Search</a><a class="page-link" href="/fastpages/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">k8s概要</h1><p class="page-description">k8sの概要</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-04-19T00:00:00-05:00" itemprop="datePublished">
+        Apr 19, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/fastpages/categories/#k8s">k8s</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#k8s-overview">k8s overview</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#主な機能">主な機能</a></li>
+<li class="toc-entry toc-h2"><a href="#k8sのサーバ構成">k8sのサーバ構成</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#マスタサーバkubernetes-master">マスタサーバ(kubernetes master)</a></li>
+<li class="toc-entry toc-h3"><a href="#データストアbackend-database">データストア(backend database)</a></li>
+<li class="toc-entry toc-h3"><a href="#ノード">ノード</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#アプリケーションの構成管理">アプリケーションの構成管理</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#pod">Pod</a></li>
+<li class="toc-entry toc-h3"><a href="#replica-set">Replica set</a></li>
+<li class="toc-entry toc-h3"><a href="#deployment">Deployment</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#ネットワークの管理service">ネットワークの管理(Service)</a></li>
+<li class="toc-entry toc-h2"><a href="#labelによるリソースの識別">Labelによるリソースの識別</a></li>
+<li class="toc-entry toc-h2"><a href="#k8sの仕組み">k8sの仕組み</a></li>
+</ul>
+</li>
+</ul><h1 id="k8s-overview">
+<a class="anchor" href="#k8s-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>k8s overview</h1>
+
+<p>k8s = 複数のホストを束ねてDockerを利用するためのオーケストレーションツール
+あたかも1台のサーバのように、透過的にアクセスできる。</p>
+
+<h2 id="主な機能">
+<a class="anchor" href="#%E4%B8%BB%E3%81%AA%E6%A9%9F%E8%83%BD" aria-hidden="true"><span class="octicon octicon-link"></span></a>主な機能</h2>
+
+<ul>
+  <li>複数サーバ間でのコンテナ管理</li>
+  <li>コンテナ間のネットワーキング</li>
+  <li>コンテナの負荷分散</li>
+  <li>コンテナの監視</li>
+  <li>無停止でのアップデート</li>
+</ul>
+
+<h2 id="k8sのサーバ構成">
+<a class="anchor" href="#k8s%E3%81%AE%E3%82%B5%E3%83%BC%E3%83%90%E6%A7%8B%E6%88%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>k8sのサーバ構成</h2>
+
+<ul>
+  <li>マスターサーバ(kubernetes master)</li>
+  <li>データストア(backend database)</li>
+  <li>ノード</li>
+</ul>
+
+<h3 id="マスタサーバkubernetes-master">
+<a class="anchor" href="#%E3%83%9E%E3%82%B9%E3%82%BF%E3%82%B5%E3%83%BC%E3%83%90kubernetes-master" aria-hidden="true"><span class="octicon octicon-link"></span></a>マスタサーバ(kubernetes master)</h3>
+
+<ul>
+  <li>コンテナを操作するためのサーバ</li>
+  <li>kubctlコマンドからのリクエストを受けて処理を行う</li>
+  <li>ノードのリソース使用状況を確認してコンテナを起動するノードを選択する</li>
+</ul>
+
+<h3 id="データストアbackend-database">
+<a class="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%B9%E3%83%88%E3%82%A2backend-database" aria-hidden="true"><span class="octicon octicon-link"></span></a>データストア(backend database)</h3>
+
+<ul>
+  <li>etcdというKVSでクラスタの構成情報を管理</li>
+  <li>マスタサーバに構築する構成もありうる</li>
+</ul>
+
+<h3 id="ノード">
+<a class="anchor" href="#%E3%83%8E%E3%83%BC%E3%83%89" aria-hidden="true"><span class="octicon octicon-link"></span></a>ノード</h3>
+
+<ul>
+  <li>コンテナを動作させるサーバ</li>
+</ul>
+
+<h2 id="アプリケーションの構成管理">
+<a class="anchor" href="#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E6%A7%8B%E6%88%90%E7%AE%A1%E7%90%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>アプリケーションの構成管理</h2>
+
+<ul>
+  <li>Pod</li>
+  <li>Replica set</li>
+  <li>Deployment</li>
+</ul>
+
+<h3 id="pod">
+<a class="anchor" href="#pod" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pod</h3>
+
+<ul>
+  <li>k8sでは複数のコンテナをまとめてPodとして管理する
+    <ul>
+      <li>webサーバとプロキシなど</li>
+    </ul>
+  </li>
+  <li>Podがデプロイの単位になる
+    <ul>
+      <li>開始/停止/作成/削除 がpod単位で行われる</li>
+    </ul>
+  </li>
+  <li>Pod(pod内のコンテナ)は同じノードに同時にデプロイされる
+    <ul>
+      <li>Pod内のコンテナは仮想NICを共有する
+        <ul>
+          <li>コンテナ同士はlocalhost軽油で通信できる</li>
+          <li>共有ディレクトリを介してログ情報をやり取りできる</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="replica-set">
+<a class="anchor" href="#replica-set" aria-hidden="true"><span class="octicon octicon-link"></span></a>Replica set</h3>
+
+<ul>
+  <li>k8sクラスタ上で予めpodを作成/起動しておく仕組み
+    <ul>
+      <li>クラスタ上に決められた数のpodを起動しておく</li>
+      <li>起動しておくpodの数をレプリカ数という</li>
+    </ul>
+  </li>
+  <li>Replica setは起動中のpodを監視し、障害など何らかの理由で停止したpodを削除し、新たなpodを起動する</li>
+  <li>pod数を同的に変更してオートスケーリングを実現することも可能</li>
+</ul>
+
+<h3 id="deployment">
+<a class="anchor" href="#deployment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deployment</h3>
+
+<ul>
+  <li>PodとReplica setをまとめたもの</li>
+  <li>Replica setの履歴を管理するもの
+    <ul>
+      <li>履歴を管理できるので、コンテナのアップデートやロールバックができる</li>
+    </ul>
+  </li>
+  <li>Replica setのテンプレートを持ち、それに従ってReplica setを作る
+    <ul>
+      <li>テンプレートでpodの構成を定義する</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ネットワークの管理service">
+<a class="anchor" href="#%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E3%81%AE%E7%AE%A1%E7%90%86service" aria-hidden="true"><span class="octicon octicon-link"></span></a>ネットワークの管理(Service)</h2>
+
+<ul>
+  <li>Serviceはlocalhostのネットワークを管理するもの</li>
+  <li>Podに対して外部からアクセスする時はServiceを定義する</li>
+  <li>Serviceにはいくつかの種類がある
+    <ul>
+      <li>Load Balancer
+        <ul>
+          <li>Serviceに対応するIPアドレス:ポート番号にアクセスするとL4レベルの負荷分散が行われる</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>サービスによって割り当てられるIPアドレスにはCluster IPとExternal IPがある
+    <ul>
+      <li>Cluster IPはクラスタ内のPod同士で通信するためのプライベートIPアドレス</li>
+      <li>External IPはクラスタ外部から通信するためのパブリックIPアドレス</li>
+    </ul>
+  </li>
+  <li>Podを起動すると、既存のサービスのIPアドレスとポートは環境変数として参照できるようになる</li>
+  <li>IngressというPodへの通信を制御する昨日もある
+    <ul>
+      <li>k8sが動作する環境によって実装が異なる
+        <ul>
+          <li>GCPの場合はHTTP Load Balanser(L7)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="labelによるリソースの識別">
+<a class="anchor" href="#label%E3%81%AB%E3%82%88%E3%82%8B%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9%E3%81%AE%E8%AD%98%E5%88%A5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Labelによるリソースの識別</h2>
+
+<ul>
+  <li>k8sではリソースを識別するためにランダムな文字列が自動的付与される</li>
+  <li>リソースには任意のLabelをつけて管理できる</li>
+  <li>Labelはkey-value型の任意の文字列</li>
+  <li>サービス定義のSelectorでLabelを指定すると、そのLabelを保つPodのみにリクエストを転送することが可能</li>
+</ul>
+
+<h2 id="k8sの仕組み">
+<a class="anchor" href="#k8s%E3%81%AE%E4%BB%95%E7%B5%84%E3%81%BF" aria-hidden="true"><span class="octicon octicon-link"></span></a>k8sの仕組み</h2>
+
+<ol>
+  <li>Master
+    <ul>
+      <li>API Server
+        <ul>
+          <li>フロントエンドのREST API</li>
+          <li>各コンポーネントから情報を受け取ってetcdに保存する
+            <ul>
+              <li>各コンポーネントはREST API経由でetcdの情報にアクセスする</li>
+            </ul>
+          </li>
+          <li>人間はkubctlコマンドはWebのGUIツールからアクセスする</li>
+          <li>認証・認可の機能も持つ</li>
+        </ul>
+      </li>
+      <li>Scheduler
+        <ul>
+          <li>Podをどのノードで動かすか制御するバックエンドコンポーネント</li>
+        </ul>
+      </li>
+      <li>Controller Manager
+        <ul>
+          <li>k8sクラスタの状態を監視するバックエンドコンポーネント</li>
+          <li>定義ファイルで指定したものと実際の状態をまとめて管理する</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Datastore
+    <ul>
+      <li>k8sクラスタの構成を保持する分散KVS</li>
+      <li>APIサーバから参照される</li>
+    </ul>
+  </li>
+  <li>Node
+    <ul>
+      <li>kublet
+        <ul>
+          <li>ノードで動作するエージェント</li>
+          <li>Dockerコンテナの実行やストレージのマウント機能を持つ</li>
+          <li>ノードのステータスを定期的に監視し、ステータスが変わるとAPI Serverに通知する</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+  </div><a class="u-url" href="/fastpages/k8s/2020/04/19/k8s-overview.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/fastpages/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/fastpages/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/fastpages/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
