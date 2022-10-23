@@ -1,3 +1,11 @@
+---
+toc: true
+layout: post
+description: AWS EC2のUbuntu Server 14.04 LTSへjupyter notebookをインストールし起動するための手順です
+categories: [jupyter,]
+title: Ubuntu Serverへのjupyter notebookインストール手順
+---
+
 # Ubuntu Serverへのjupyter notebookインストール手順
 
 
