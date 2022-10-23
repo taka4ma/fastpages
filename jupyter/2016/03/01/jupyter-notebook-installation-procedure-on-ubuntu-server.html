@@ -1,8 +1,130 @@
-<h1 id="ubuntu-serverへのjupyter-notebookインストール手順">Ubuntu Serverへのjupyter notebookインストール手順</h1>
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Ubuntu Serverへのjupyter notebookインストール手順 | fastpages</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Ubuntu Serverへのjupyter notebookインストール手順" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="AWS EC2のUbuntu Server 14.04 LTSへjupyter notebookをインストールし起動するための手順です" />
+<meta property="og:description" content="AWS EC2のUbuntu Server 14.04 LTSへjupyter notebookをインストールし起動するための手順です" />
+<link rel="canonical" href="https://taka4ma.github.io/fastpages/jupyter/2016/03/01/jupyter-notebook-installation-procedure-on-ubuntu-server.html" />
+<meta property="og:url" content="https://taka4ma.github.io/fastpages/jupyter/2016/03/01/jupyter-notebook-installation-procedure-on-ubuntu-server.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-03-01T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Ubuntu Serverへのjupyter notebookインストール手順" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2016-03-01T00:00:00-06:00","datePublished":"2016-03-01T00:00:00-06:00","description":"AWS EC2のUbuntu Server 14.04 LTSへjupyter notebookをインストールし起動するための手順です","headline":"Ubuntu Serverへのjupyter notebookインストール手順","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/jupyter/2016/03/01/jupyter-notebook-installation-procedure-on-ubuntu-server.html"},"url":"https://taka4ma.github.io/fastpages/jupyter/2016/03/01/jupyter-notebook-installation-procedure-on-ubuntu-server.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/fastpages/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://taka4ma.github.io/fastpages/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/fastpages/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/fastpages/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/fastpages/about/">About Me</a><a class="page-link" href="/fastpages/search/">Search</a><a class="page-link" href="/fastpages/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Ubuntu Serverへのjupyter notebookインストール手順</h1><p class="page-description">AWS EC2のUbuntu Server 14.04 LTSへjupyter notebookをインストールし起動するための手順です</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2016-03-01T00:00:00-06:00" itemprop="datePublished">
+        Mar 1, 2016
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/fastpages/categories/#jupyter">jupyter</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#ubuntu-serverへのjupyter-notebookインストール手順">Ubuntu Serverへのjupyter notebookインストール手順</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#前提条件">前提条件</a></li>
+<li class="toc-entry toc-h2"><a href="#手順">手順</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#ec2インスタンスへのsshアクセス">EC2インスタンスへのsshアクセス</a></li>
+<li class="toc-entry toc-h3"><a href="#git-インストール">git インストール</a></li>
+<li class="toc-entry toc-h3"><a href="#pyenv-インストール">pyenv インストール</a></li>
+<li class="toc-entry toc-h3"><a href="#anacondaインストール">anacondaインストール</a></li>
+<li class="toc-entry toc-h3"><a href="#jupyterのインストール">jupyterのインストール</a></li>
+<li class="toc-entry toc-h3"><a href="#jupyterの設定">jupyterの設定</a></li>
+<li class="toc-entry toc-h3"><a href="#jupyter-notebookの開始">jupyter notebookの開始</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#オプション">オプション</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#パスワードの設定">パスワードの設定</a></li>
+<li class="toc-entry toc-h3"><a href="#暗号化通信の設定">暗号化通信の設定</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><h1 id="ubuntu-serverへのjupyter-notebookインストール手順">
+<a class="anchor" href="#ubuntu-server%E3%81%B8%E3%81%AEjupyter-notebook%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%89%8B%E9%A0%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ubuntu Serverへのjupyter notebookインストール手順</h1>
 
 <p>これは、AWS EC2のUbuntu Server 14.04 LTSへjupyter notebookをインストールし起動するための手順です。(AWSの設定手順については、この記事では触れません。)</p>
 
-<h2 id="前提条件">前提条件</h2>
+<h2 id="前提条件">
+<a class="anchor" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>前提条件</h2>
 
 <ul>
   <li>EC2インスタンスは作成済みのこと</li>
@@ -18,32 +140,38 @@
   <li>インスタンスタイプ: t2.micro</li>
 </ul>
 
-<h2 id="手順">手順</h2>
+<h2 id="手順">
+<a class="anchor" href="#%E6%89%8B%E9%A0%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>手順</h2>
 
 <p><a href="http://jupyter.readthedocs.org/en/latest/install.html#new-users-new-to-python-and-jupyter">Installation — Jupyter Documentation 4.1.0b1 documentation</a>ではanacondaの利用を勧めているので、pyenvを使ってpythonとanacondaをインストールし、anacondaでjupyter notebookをインストールします。</p>
 
-<h3 id="ec2インスタンスへのsshアクセス">EC2インスタンスへのsshアクセス</h3>
+<h3 id="ec2インスタンスへのsshアクセス">
+<a class="anchor" href="#ec2%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%B8%E3%81%AEssh%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>EC2インスタンスへのsshアクセス</h3>
 
 <p>EC2インスタンスにはsshでアクセスします。</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh <span class="nt">-i</span> aws-key ubuntu@public-ip
 </code></pre></div></div>
 
-<h3 id="git-インストール">git インストール</h3>
+<h3 id="git-インストール">
+<a class="anchor" href="#git-%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>git インストール</h3>
 
 <p>pyenvのインストールにgitが必要になるのでインストールします。</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> git
 </code></pre></div></div>
 
-<h3 id="pyenv-インストール">pyenv インストール</h3>
+<h3 id="pyenv-インストール">
+<a class="anchor" href="#pyenv-%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>pyenv インストール</h3>
 
 <p>pyenvの<a href="https://github.com/yyuu/pyenv#basic-github-checkout">Installation-Basic GitHub Checkout</a>の1~4の手順でインストールします。
 ただし、basic-github-checkoutの手順そのままでは上手く行きません。幾つか手順を変える必要があります。</p>
 
 <ol>
-  <li>Ubuntu 14.04では.bash_profileが.profileに変わっているので、そこを読み替える <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup></li>
-  <li>手順4はシェルのリスタートなので<code class="language-plaintext highlighter-rouge">exec</code>に<code class="language-plaintext highlighter-rouge">-l</code>オプションが不足している <sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup></li>
+  <li>Ubuntu 14.04では.bash_profileが.profileに変わっているので、そこを読み替える <sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>
+</li>
+  <li>手順4はシェルのリスタートなので<code class="language-plaintext highlighter-rouge">exec</code>に<code class="language-plaintext highlighter-rouge">-l</code>オプションが不足している <sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>
+</li>
 </ol>
 
 <p>実際に叩くコマンドは以下になります。</p>
@@ -55,7 +183,8 @@
 <span class="nv">$ </span><span class="nb">exec</span> <span class="nt">-l</span> <span class="nv">$SHELL</span>
 </code></pre></div></div>
 
-<h3 id="anacondaインストール">anacondaインストール</h3>
+<h3 id="anacondaインストール">
+<a class="anchor" href="#anaconda%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>anacondaインストール</h3>
 
 <p>pyenvででpythonとanacondaをインストールします。
 まず、pyenvでインストール出来るanacondaのリストを確認しておきます。</p>
@@ -111,7 +240,8 @@ Installed Anaconda3-2.4.1-Linux-x86_64 to /home/ubuntu/.pyenv/versions/anaconda3
 Python 3.5.1 :: Anaconda 2.4.1 <span class="o">(</span>64-bit<span class="o">)</span>
 </code></pre></div></div>
 
-<h3 id="jupyterのインストール">jupyterのインストール</h3>
+<h3 id="jupyterのインストール">
+<a class="anchor" href="#jupyter%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>jupyterのインストール</h3>
 <p>anacondaをインストールできたらいよいよjupyter notebookのインストールです。
 コマンドは<code class="language-plaintext highlighter-rouge">conda install -y jupyter</code>だけで大丈夫です。</p>
 
@@ -175,7 +305,8 @@ Linking packages ...
 <span class="o">[</span>      COMPLETE      <span class="o">]</span>|###################################################| 100%
 </code></pre></div></div>
 
-<h3 id="jupyterの設定">jupyterの設定</h3>
+<h3 id="jupyterの設定">
+<a class="anchor" href="#jupyter%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>jupyterの設定</h3>
 
 <p>jupyter notebookをEC2で使うには、いくつかの設定を変更しなければなりません。
 まずは、コンフィグファイルを作成します。<sup id="fnref:4" role="doc-noteref"><a href="#fn:4" class="footnote" rel="footnote">4</a></sup></p>
@@ -204,7 +335,8 @@ $ sed -ri "s/# c.NotebookApp.open_browser = True/c.NotebookApp.open_browser = Fa
 
 <p>なお、コンフィグファイルの各項目について知りたい場合は、<a href="http://jupyter-notebook.readthedocs.org/en/latest/config.html#config-file-and-command-line-options">Config file and command line options — Jupyter Notebook 4.1.0rc1 documentation</a>を参照してください。</p>
 
-<h3 id="jupyter-notebookの開始">jupyter notebookの開始</h3>
+<h3 id="jupyter-notebookの開始">
+<a class="anchor" href="#jupyter-notebook%E3%81%AE%E9%96%8B%E5%A7%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>jupyter notebookの開始</h3>
 
 <p>以上でjupyter notebookのインストールと設定が出来ました。
 コンソールで<code class="language-plaintext highlighter-rouge">jupyter notebook</code>と入力するとjupyter notebookがスタートします。</p>
@@ -214,9 +346,11 @@ $ sed -ri "s/# c.NotebookApp.open_browser = True/c.NotebookApp.open_browser = Fa
 
 <p>ブラウザでEC2インスタンスのpublic_ip_address:8888にアクセスし、jupyter notebookのトップページが表示されればインストール・設定は完了です。</p>
 
-<h2 id="オプション">オプション</h2>
+<h2 id="オプション">
+<a class="anchor" href="#%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3" aria-hidden="true"><span class="octicon octicon-link"></span></a>オプション</h2>
 
-<h3 id="パスワードの設定">パスワードの設定</h3>
+<h3 id="パスワードの設定">
+<a class="anchor" href="#%E3%83%91%E3%82%B9%E3%83%AF%E3%83%BC%E3%83%89%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>パスワードの設定</h3>
 
 <p>これまでの手順でjupyter notebookを立ち上げてアクセスすることは可能ですが、このまま立ち上げると誰でもアクセス可能(=サーバ上でPythonコードを実行し放題)なので、パスワードを設定します。<sup id="fnref:5" role="doc-noteref"><a href="#fn:5" class="footnote" rel="footnote">5</a></sup></p>
 
@@ -239,7 +373,8 @@ In [3]: quit()    # ipythonを終了
 <pre><code class="language-Python:jupyter_notebook_config.py">c.NotebookApp.password = 'sha1:371793e28601:458c6bb9fc9371410b37cfc0d5833bfb54a26d7c'
 </code></pre>
 
-<h3 id="暗号化通信の設定">暗号化通信の設定</h3>
+<h3 id="暗号化通信の設定">
+<a class="anchor" href="#%E6%9A%97%E5%8F%B7%E5%8C%96%E9%80%9A%E4%BF%A1%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>暗号化通信の設定</h3>
 
 <p>パスワードを設定してもこのままでは平文で送信されるため、パスワードもjupyter notebookとブラウザ間の通信も盗聴される恐れがあります。</p>
 
@@ -259,19 +394,53 @@ c.NotebookApp.keyfile = '/home/ubuntu/.jupyter/mykey.key'
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:1" role="doc-endnote">
-      <p><a href="http://qiita.com/HirofumiYashima/items/4b1db4f05fc11d160b4e">Ubuntu14.04 - Ubuntu 14.04 の .bash_profile ファイル のファイル名 は、.profile に変わっていた件 - Qiita</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://qiita.com/HirofumiYashima/items/4b1db4f05fc11d160b4e">Ubuntu14.04 - Ubuntu 14.04 の .bash_profile ファイル のファイル名 は、.profile に変わっていた件 - Qiita</a> <a href="#fnref:1" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
     <li id="fn:2" role="doc-endnote">
-      <p><a href="http://qiita.com/rentalname@github/items/14b32c0b50b277837528">shell - シェルの再起動 - Qiita</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://qiita.com/rentalname@github/items/14b32c0b50b277837528">shell - シェルの再起動 - Qiita</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
     <li id="fn:3" role="doc-endnote">
-      <p><a href="http://www.task-notes.com/entry/20151116/1447642800">AnacondaでPythonの分析環境をまとめてインストール - TASK NOTES</a> <a href="#fnref:3" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://www.task-notes.com/entry/20151116/1447642800">AnacondaでPythonの分析環境をまとめてインストール - TASK NOTES</a> <a href="#fnref:3" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
     <li id="fn:4" role="doc-endnote">
-      <p><a href="http://jupyter.readthedocs.org/en/latest/config.html#python-config-files">Configuring Jupyter applications — Jupyter Documentation 4.1.0b1 documentation</a> <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://jupyter.readthedocs.org/en/latest/config.html#python-config-files">Configuring Jupyter applications — Jupyter Documentation 4.1.0b1 documentation</a> <a href="#fnref:4" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
     <li id="fn:5" role="doc-endnote">
-      <p><a href="http://akiniwa.hatenablog.jp/entry/2013/11/25/001805">ipython notebookをリモートサーバ上で動かす。 - 忘れないようにメモっとく</a> <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p><a href="http://akiniwa.hatenablog.jp/entry/2013/11/25/001805">ipython notebookをリモートサーバ上で動かす。 - 忘れないようにメモっとく</a> <a href="#fnref:5" class="reversefootnote" role="doc-backlink">↩</a></p>
     </li>
   </ol>
 </div>
+
+  </div><a class="u-url" href="/fastpages/jupyter/2016/03/01/jupyter-notebook-installation-procedure-on-ubuntu-server.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/fastpages/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/fastpages/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/fastpages/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
