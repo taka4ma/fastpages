@@ -1,7 +1,7 @@
 ---
 toc: true
 layout: post
-description: [Cloud9でPython開発環境を作る](https://taka4ma.github.io/contents/0007/0007.html)でCloud9に作ったPython開発環境にDjangoの開発環境を作っていく
+description: Cloud9に作ったPython開発環境にDjangoの開発環境を作っていく
 categories: [cloud9, django]
 title: Cloud9にDjango開発環境を作る
 ---
