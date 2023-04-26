@@ -2,7 +2,7 @@
 toc: true
 layout: post
 description: このドキュメントは、Rocky Linux 8をインストールした複数のノードにmariadbを使ってGalera Clusterを構築する手順を提供します
-categories: [galera, rocky_linux]
+categories: [galera, rocky-linux]
 title: GaleraCluster構築手順
 ---
 
