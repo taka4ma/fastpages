@@ -2,7 +2,7 @@
 toc: true
 layout: post
 description: 本記事では、キーベアを使用する際の注意点について説明します
-categories: [ssh]
+categories: [ssh,]
 title: SSH鍵の作成と使用について
 ---
 
