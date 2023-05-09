@@ -99,8 +99,7 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h1"><a href="#galeracluster構築手順">GaleraCluster構築手順</a>
-<ul>
+<li class="toc-entry toc-h2"><a href="#はじめに">はじめに</a></li>
 <li class="toc-entry toc-h2"><a href="#mariadbをインストールする">MariaDBをインストールする</a></li>
 <li class="toc-entry toc-h2"><a href="#データベースの設定">データベースの設定</a>
 <ul>
@@ -128,15 +127,13 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#既存ノードにクラスタ構成ノードの情報を追加する">既存ノードにクラスタ構成ノードの情報を追加する</a></li>
 </ul>
 </li>
-</ul>
-</li>
-</ul><h1 id="galeracluster構築手順">
-<a class="anchor" href="#galeracluster%E6%A7%8B%E7%AF%89%E6%89%8B%E9%A0%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>GaleraCluster構築手順</h1>
+</ul><h2 id="はじめに">
+<a class="anchor" href="#%E3%81%AF%E3%81%98%E3%82%81%E3%81%AB" aria-hidden="true"><span class="octicon octicon-link"></span></a>はじめに</h2>
 
 <p>このドキュメントは、Rocky Linux 8をインストールした複数のノードにmariadbを使ってGalera Clusterを構築する手順を提供します。</p>
 
 <p>Galera Clusterは奇数のノード数で構成することが推奨されます。
-これは、クラスタを構成するノードがネットワーク障害によって複数に分割された場合、各ノードは通信可能な他ノードを調べ、過半数を超えている場合は動作を継続し、下回っている場合は動作を停止するためです。</p>
+これは、クラスタを構成するノードがネットワーク障害等によって分断された場合、各ノードは通信可能な他ノードを調べ、過半数を超えている場合は動作を継続し、下回っている場合は動作を停止するためです。</p>
 
 <p>しかし、本ドキュメントではノード1, ノード2の2ノードでクラスタを構成します。
 これは分かりやすさを優先するためです。
