@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>GaleraCluster構築手順 | fastpages</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="GaleraCluster構築手順" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="このドキュメントは、Rocky Linux 8をインストールした複数のノードにmariadbを使ってGalera Clusterを構築する手順を提供します" />
+<meta property="og:description" content="このドキュメントは、Rocky Linux 8をインストールした複数のノードにmariadbを使ってGalera Clusterを構築する手順を提供します" />
+<link rel="canonical" href="https://taka4ma.github.io/fastpages/galera/rocky-linux/2023/04/26/GaleraClusterConstructionProcedure.html" />
+<meta property="og:url" content="https://taka4ma.github.io/fastpages/galera/rocky-linux/2023/04/26/GaleraClusterConstructionProcedure.html" />
+<meta property="og:site_name" content="fastpages" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-04-26T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="GaleraCluster構築手順" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-26T00:00:00-05:00","datePublished":"2023-04-26T00:00:00-05:00","description":"このドキュメントは、Rocky Linux 8をインストールした複数のノードにmariadbを使ってGalera Clusterを構築する手順を提供します","headline":"GaleraCluster構築手順","mainEntityOfPage":{"@type":"WebPage","@id":"https://taka4ma.github.io/fastpages/galera/rocky-linux/2023/04/26/GaleraClusterConstructionProcedure.html"},"url":"https://taka4ma.github.io/fastpages/galera/rocky-linux/2023/04/26/GaleraClusterConstructionProcedure.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/fastpages/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://taka4ma.github.io/fastpages/feed.xml" title="fastpages" /><link rel="shortcut icon" type="image/x-icon" href="/fastpages/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/fastpages/">fastpages</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/fastpages/test/2020-01-14-test-markdown-post.html">An Example Markdown Post</a><a class="page-link" href="/fastpages/about/">About Me</a><a class="page-link" href="/fastpages/search/">Search</a><a class="page-link" href="/fastpages/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">GaleraCluster構築手順</h1><p class="page-description">このドキュメントは、Rocky Linux 8をインストールした複数のノードにmariadbを使ってGalera Clusterを構築する手順を提供します</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-04-26T00:00:00-05:00" itemprop="datePublished">
+        Apr 26, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/fastpages/categories/#galera">galera</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/fastpages/categories/#rocky-linux">rocky-linux</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#galeracluster構築手順">GaleraCluster構築手順</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#mariadbをインストールする">MariaDBをインストールする</a></li>
+<li class="toc-entry toc-h2"><a href="#データベースの設定">データベースの設定</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#サービスの自動起動が無効になっていることを確認する">サービスの自動起動が無効になっていることを確認する</a></li>
+<li class="toc-entry toc-h3"><a href="#ログ出力設定">ログ出力設定</a></li>
+<li class="toc-entry toc-h3"><a href="#rootアカウントを設定する">rootアカウントを設定する</a></li>
+<li class="toc-entry toc-h3"><a href="#匿名ユーザを削除する">匿名ユーザを削除する</a></li>
+<li class="toc-entry toc-h3"><a href="#wsrepオプションを設定する">wsrepオプションを設定する</a></li>
+<li class="toc-entry toc-h3"><a href="#wsrep_cluster設定">wsrep_cluster設定</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#ファイアウォールの設定">ファイアウォールの設定</a></li>
+<li class="toc-entry toc-h2"><a href="#galeraclusterの初期化">GaleraClusterの初期化</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#クラスタを構成するノードとバックエンドスキーマを設定する">クラスタを構成するノードとバックエンドスキーマを設定する</a></li>
+<li class="toc-entry toc-h3"><a href="#クラスタを起動する">クラスタを起動する</a></li>
+<li class="toc-entry toc-h3"><a href="#ノードのステータスを確認する">ノードのステータスを確認する</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#ノードの追加">ノードの追加</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#クラスタを構成するノードとバックエンドスキーマの設定">クラスタを構成するノードとバックエンドスキーマの設定</a></li>
+<li class="toc-entry toc-h3"><a href="#mariadbを開始する">MariaDBを開始する</a></li>
+<li class="toc-entry toc-h3"><a href="#ノードのステータスを確認する-1">ノードのステータスを確認する</a></li>
+<li class="toc-entry toc-h3"><a href="#既存ノードにクラスタ構成ノードの情報を追加する">既存ノードにクラスタ構成ノードの情報を追加する</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><h1 id="galeracluster構築手順">
+<a class="anchor" href="#galeracluster%E6%A7%8B%E7%AF%89%E6%89%8B%E9%A0%86" aria-hidden="true"><span class="octicon octicon-link"></span></a>GaleraCluster構築手順</h1>
+
+<p>このドキュメントは、Rocky Linux 8をインストールした複数のノードにmariadbを使ってGalera Clusterを構築する手順を提供します。</p>
+
+<p>Galera Clusterは奇数のノード数で構成することが推奨されます。
+これは、クラスタを構成するノードがネットワーク障害によって複数に分割された場合、各ノードは通信可能な他ノードを調べ、過半数を超えている場合は動作を継続し、下回っている場合は動作を停止するためです。</p>
+
+<p>しかし、本ドキュメントではノード1, ノード2の2ノードでクラスタを構成します。
+これは分かりやすさを優先するためです。
+とはいえ、ノード2に対する操作をノード3, ノード4…に適用することでより多い数のノードでクラスタを構成する場合でも本ドキュメントを利用できるよう記述してあります。</p>
+
+<ul>
+  <li>
+    <p>Galera Clusterとは</p>
+
+    <p>Galera Clusterは、MySQLとMariaDBのマルチマスタークラスタリングと同期レプリケーションを提供します。
+  詳細は公式サイト( https://galeracluster.com/ )を参照してください。</p>
+  </li>
+</ul>
+
+<h2 id="mariadbをインストールする">
+<a class="anchor" href="#mariadb%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>MariaDBをインストールする</h2>
+
+<p>まずは、クラスタを構成する各ノードにMariaDBをインストールします。</p>
+
+<ol>
+  <li>
+    <p>リポジトリを追加する</p>
+
+    <p>MariaDBのパッケージリポジトリセットアップスクリプトを使います。<br>
+ このスクリプトは、以下のタスクを行います。</p>
+
+    <ul>
+      <li>/etc/yum.repos.d/mariadb.repo へのリポジトリ設定ファイル作成</li>
+      <li>MariaDBソフトウェアパッケージの署名検証に使用するGPG公開鍵をdownloads.mariadb.comからインポート</li>
+    </ul>
+
+    <p>スクリプト実行時に、<code class="language-plaintext highlighter-rouge">--mariadb-server-version</code>を使用することで、バージョンを指定します。今回は、本ドキュメント作成時点で最新の10.11を指定しています。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ sudo curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-10.11"
+ # [info] Checking for script prerequisites.# [info] MariaDB Server version 10.11 is valid
+ # [info] Repository file successfully written to /etc/yum.repos.d/mariadb.repo
+ # [info] Adding trusted package signing keys...
+ /etc/pki/rpm-gpg /home/rocky
+ /home/rocky
+ # [info] Successfully added trusted package signing keys
+ # [info] Cleaning package cache...
+ 41 files removed
+</code></pre></div>    </div>
+
+    <p>作成されたリポジトリ設定ファイルは以下です。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ cat /etc/yum.repos.d/mariadb.repo
+    
+ [mariadb-main]
+ name = MariaDB Server
+ baseurl = https://dlm.mariadb.com/repo/mariadb-server/10.11/yum/rhel/8/x86_64
+ gpgkey = file:///etc/pki/rpm-gpg/MariaDB-Server-GPG-KEY
+ gpgcheck = 1
+ enabled = 1
+ module_hotfixes = 1
+    
+    
+ [mariadb-maxscale]
+ # To use the latest stable release of MaxScale, use "latest" as the version
+ # To use the latest beta (or stable if no current beta) release of MaxScale, use "beta" as the version
+ name = MariaDB MaxScale
+ baseurl = https://dlm.mariadb.com/repo/maxscale/latest/yum/rhel/8/x86_64
+ gpgkey = file:///etc/pki/rpm-gpg/MariaDB-MaxScale-GPG-KEY
+ gpgcheck = 1
+ enabled = 1
+    
+    
+ [mariadb-tools]
+ name = MariaDB Tools
+ baseurl = https://downloads.mariadb.com/Tools/rhel/8/x86_64
+ gpgkey = file:///etc/pki/rpm-gpg/MariaDB-Enterprise-GPG-KEY
+ gpgcheck = 1
+ enabled = 1
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>パッケージをインストールする</p>
+
+    <p>リポジトリ追加後、パッケージをインストールします。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ sudo dnf install -y MariaDB-server MariaDB-client MariaDB-backup
+ &lt;&lt; 中略  &gt;&gt;
+ Complete!
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="データベースの設定">
+<a class="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>データベースの設定</h2>
+
+<p>MariaDBをインストールできたら、初期設定を行なっていきます。</p>
+
+<h3 id="サービスの自動起動が無効になっていることを確認する">
+<a class="anchor" href="#%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%AE%E8%87%AA%E5%8B%95%E8%B5%B7%E5%8B%95%E3%81%8C%E7%84%A1%E5%8A%B9%E3%81%AB%E3%81%AA%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E3%81%93%E3%81%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>サービスの自動起動が無効になっていることを確認する</h3>
+
+<p>Galera Clusterを構成する場合、OS起動時にDBが自動起動すると困る場合があるので、自動起動しない設定になっていることを確認しておきます。</p>
+
+<p>このセクションはクラスタを構成する全てのノードで行います。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl is-enabled mariadb
+disabled
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">systemctl is-enabled</code>の結果が<code class="language-plaintext highlighter-rouge">disabled</code>であればOKです。</p>
+
+<h3 id="ログ出力設定">
+<a class="anchor" href="#%E3%83%AD%E3%82%B0%E5%87%BA%E5%8A%9B%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>ログ出力設定</h3>
+
+<p>MariaDBはインストール直後の状態ではログが出力されないので、ログを出力するよう設定します。
+本ドキュメントでは<code class="language-plaintext highlighter-rouge">/var/log/mariadb</code>に出力することにします。</p>
+
+<p>このセクションはクラスタを構成する全てのノードで行います。</p>
+
+<ol>
+  <li>
+    <p>ログの出力先ディレクトリを作成する</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ sudo install -d -m 0755 -o mysql -g mysql /var/log/mariadb
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>ログの出力先を設定する</p>
+
+    <p><code class="language-plaintext highlighter-rouge">/etc/my.cnf.d/server.cnf</code>をエディタで開いて、<code class="language-plaintext highlighter-rouge">[mysqld]</code>セクションに、以下の行を追加します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> log-error=/var/log/mariadb/mariadb.log
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="rootアカウントを設定する">
+<a class="anchor" href="#root%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>rootアカウントを設定する</h3>
+
+<p>mariadbをインストールすると、rootアカウントが作成されますが、パスワードが設定されていないので、パスワードを設定します。</p>
+
+<p>このセクションは、クラスタを構成するノードの最初の1台になるノード(本ドキュメントではノード1)のみで行います。</p>
+
+<ol>
+  <li>
+    <p>MariaDBを開始する</p>
+
+    <p>アカウントを設定するにはmariadbが動作していなければならないので、まずはmariadbを開始します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>$ sudo systemctl start mariadb
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>MariaDBサーバへrootユーザで接続する</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ sudo mysql
+</code></pre></div>    </div>
+
+    <p>MariaDBサーバへの接続はmysqlコマンドを使用します。
+ mysqlコマンドは<code class="language-plaintext highlighter-rouge">-u</code>オプションでログインするユーザを指定しますが、<code class="language-plaintext highlighter-rouge">-u</code>オプションを設定しない場合はLinuxの現在のユーザー名をユーザとして使用します。
+ (<code class="language-plaintext highlighter-rouge">sudo mysql</code>とした場合、ユーザはrootになります。) 
+ ログインに成功すると、<code class="language-plaintext highlighter-rouge">MariaDB &gt;</code>プロンプトが表示されます。</p>
+  </li>
+  <li>
+    <p>rootにパスワードを設定する</p>
+
+    <p><code class="language-plaintext highlighter-rouge">ALTER USER</code>ステートメントを使って、パスワードを設定します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  &gt; ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
+</code></pre></div>    </div>
+
+    <p>new_passwordの箇所を実際に設定したいパスワードにしてください。</p>
+  </li>
+  <li>
+    <p>MariaDBサーバから切断する</p>
+
+    <p>パスワードを設定したら、一度、mariadbサーバから切断します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>&gt; exit;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>もう一度MariaDBサーバへ接続し、パスワードが設定できていることを確認する</p>
+
+    <p>もう一度mariadbサーバへ接続し、パスワードが設定できていることを確認します。今回は<code class="language-plaintext highlighter-rouge">-p</code>オプションをつけます。<code class="language-plaintext highlighter-rouge">Enter password:</code>というプロンプトが表示されたら、先ほど設定したパスワードを入力します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ sudo mysql -p
+ Enter password: ********
+</code></pre></div>    </div>
+
+    <p><code class="language-plaintext highlighter-rouge">********</code>の箇所に、実際に設定したパスワードを入力します。
+ ログインに成功すれば、<code class="language-plaintext highlighter-rouge">MariaDB &gt;</code>プロンプトが表示されます。</p>
+  </li>
+  <li>
+    <p>MariaDBサーバから切断する</p>
+
+    <p>パスワードを設定できていることが確認できたら、mariadbサーバから切断します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>&gt; exit;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>(オプション) .my.cnf を作成する</p>
+
+    <p>セキュリティポリシー上許されるのであれば、以下のファイルを<code class="language-plaintext highlighter-rouge">/root/.my.cnf</code>に作成します。
+ (<code class="language-plaintext highlighter-rouge">********</code>の箇所は実際に設定したパスワードを記述してください。)
+ このファイルを作成しておくと、<code class="language-plaintext highlighter-rouge">sudo mysql</code>でパスワードを入力せずにログインできるようになります。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> [mysql]
+ user=root
+ host=localhost
+ password='********'
+ socket=/var/lib/mysql/mysql.sock
+    
+ [client]
+ user=root
+ host=localhost
+ password='********'
+ socket=/var/lib/mysql/mysql.sock
+    
+ [mysqldump]
+ user=root
+ host=localhost
+ password='********'
+ socket=/var/lib/mysql/mysql.sock
+    
+ [mysqladmin]
+ user=root
+ host=localhost
+ password='********'
+ socket=/var/lib/mysql/mysql.sock
+    
+ [mysqlcheck]
+ user=root
+ host=localhost
+ password='********'
+ socket=/var/lib/mysql/mysql.sock
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="匿名ユーザを削除する">
+<a class="anchor" href="#%E5%8C%BF%E5%90%8D%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%92%E5%89%8A%E9%99%A4%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>匿名ユーザを削除する</h3>
+
+<p>MariaDBをインストールすると、匿名のユーザが作成されているので、削除しておきます。</p>
+
+<p>このセクションは、クラスタを構成するノードの最初の1台になるノード(本ドキュメントではノード1)のみで行います。</p>
+
+<ol>
+  <li>
+    <p>ユーザを確認する</p>
+
+    <p>mysqlコマンドの<code class="language-plaintext highlighter-rouge">-e</code>オプションにSQL分を渡すことで、クエリーを実行することができます。今回はそれを利用して、現在のユーザ一覧を出力します。
+ (<code class="language-plaintext highlighter-rouge">-e</code>オプションを使わず、一度ログインしてから実行しても構いません。)
+ (<code class="language-plaintext highlighter-rouge">/root/.my.cnf</code>を設定している場合は<code class="language-plaintext highlighter-rouge">-p</code>オプションは不要です。<code class="language-plaintext highlighter-rouge">-p</code>オプションをつけると<code class="language-plaintext highlighter-rouge">/root/.my.cnf</code>の設定に関わらずパスワードを要求されます。)</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>$ sudo mysql -p -e "select user,host,password from mysql.user;"
+ Enter password:
+ +-------------+------------------------+-------------------------------------------+
+ | User        | Host                   | Password                                  |
+ +-------------+------------------------+-------------------------------------------+
+ | mariadb.sys | localhost              |                                           |
+ | root        | localhost              | *0913BF2E2CE20CE21BFB1961AF124D4920458E5F |
+ | mysql       | localhost              | invalid                                   |
+ | PUBLIC      |                        |                                           |
+ |             | localhost              |                                           |
+ |             | hostname               |                                           |
+ +-------------+------------------------+-------------------------------------------+
+</code></pre></div>    </div>
+
+    <p><code class="language-plaintext highlighter-rouge">User</code>の箇所が空になっているレコードが匿名ユーザです。
+ <code class="language-plaintext highlighter-rouge">Host</code>がhostnameになっている箇所は、実際はインストールされているマシンのhostnameが設定されています。</p>
+  </li>
+  <li>
+    <p>匿名ユーザを削除する</p>
+
+    <p>以下のようにクエリーを実行して、匿名ユーザを削除します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ sudo mysql -p -e "delete from mysql.user where user = '';"
+ Enter password:
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>結果を確認しておく</p>
+
+    <p>匿名ユーザが削除されていることを確認しておきます。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ sudo mysql -p -e "select user,host,password from mysql.user;"
+ Enter password:
+ +-------------+-----------+-------------------------------------------+
+ | User        | Host      | Password                                  |
+ +-------------+-----------+-------------------------------------------+
+ | mariadb.sys | localhost |                                           |
+ | root        | localhost | *0913BF2E2CE20CE21BFB1961AF124D4920458E5F |
+ | mysql       | localhost | invalid                                   |
+ | PUBLIC      |           |                                           |
+ +-------------+-----------+-------------------------------------------+
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>MariaDBを停止する</p>
+
+    <p>アカウントを設定が終わったら、MariaDBを停止しておきます。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>$ sudo systemctl stop mariadb
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="wsrepオプションを設定する">
+<a class="anchor" href="#wsrep%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>wsrepオプションを設定する</h3>
+
+<p><code class="language-plaintext highlighter-rouge">/etc/my.cnf.d/server.cnf</code>ファイルのwsrepオプションを設定します。
+(“wsrep”は”Write Set REPlication”の略で、Galera Clusterにおいてレプリケーションやデータ同期のために使用されるプロトコルおよびAPIです。)</p>
+
+<p>このセクションはクラスタを構成する全てのノードで行います。</p>
+
+<ul>
+  <li>
+    <p>wsrep_on</p>
+
+    <p>レプリケーションを行うかの設定です。コメントアウトされているので、アンコメントします。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  [galera]
+  # Mandatory settings
+  wsrep_on=ON
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>wsrep_provider</p>
+
+    <p>レプリケーションプラグインのパスを設定します。コメントアウトされているので、アンコメントした上で、パスを設定します。
+  Rocky8にMariaDB10.11をインストールした場合のパスは<code class="language-plaintext highlighter-rouge">/usr/lib64/galera-4/libgalera_smm.so</code>です。
+  (他のOS, バージョンの場合はfindコマンドを使うなどの方法で、<code class="language-plaintext highlighter-rouge">libgalera_smm.so</code>を探してください。」)</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  [galera]
+  # Mandatory settings
+  wsrep_on=ON
+  wsrep_provider=/usr/lib64/galera-4/libgalera_smm.so
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>binlog_format</p>
+
+    <p>バイナリログのフォーマットです。コメントアウトされているので、アンコメントします。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  binlog_format=row
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>default_storage_engine</p>
+
+    <p>デフォルトのストレージエンジンです。コメントアウトされているので、アンコメントします。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  default_storage_engine=InnoDB
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>innodb_autoinc_lock_mode</p>
+
+    <p>自動インクリメント値を生成するためのInnoDB ロックモードの設定です。
+  コメントアウトされているので、アンコメントします。
+  <strong>この設定は必ず2</strong> でなければなりません。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  innodb_autoinc_lock_mode=2
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="wsrep_cluster設定">
+<a class="anchor" href="#wsrep_cluster%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>wsrep_cluster設定</h3>
+
+<p><code class="language-plaintext highlighter-rouge">/etc/my.cnf.d/server.cnf</code>ファイルにクラスタ関連のオプションを設定します。</p>
+
+<p>このセクションはクラスタを構成する全てのノードで行います。</p>
+
+<ul>
+  <li>
+    <p>wsrep_cluster_name</p>
+
+    <p>クラスタの名前を設定します。
+  ノードがクラスタに接続する際にこの値を照合し、一致した場合のみ接続します。
+  そのため、<strong>クラスタを構成する全てのノードで同じ値</strong>を設定する必要があります。
+  コメントアウトされているので、アンコメントした上で値を設定します。
+  本ドキュメントではクラスタ名を仮に<code class="language-plaintext highlighter-rouge">sample_cluster</code>とします。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  wsrep_cluster_name=sample_cluster
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>wsrep_node_name</p>
+
+    <p>ノードの論理名を設定します。
+  この設定は<strong>ノードごとに異なる値</strong>を設定する必要があります。
+  本ドキュメントではノード1のノード名を仮に<code class="language-plaintext highlighter-rouge">node1</code>、ノード2のノード名を仮に<code class="language-plaintext highlighter-rouge">node2</code>とします。</p>
+
+    <ul>
+      <li>ノード1
+        <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  wsrep_node_name=node1
+</code></pre></div>        </div>
+      </li>
+      <li>ノード2
+        <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  wsrep_node_name=node2
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>wsrep_node_address</p>
+
+    <p>ノードのIPアドレスを設定します。
+  本ドキュメントではノード1のIPアドレスを仮に<code class="language-plaintext highlighter-rouge">192.168.1.1</code>、ノード1のIPアドレスを仮に<code class="language-plaintext highlighter-rouge">192.168.1.2</code>とします。</p>
+
+    <ul>
+      <li>ノード1
+        <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  wsrep_node_address=192.168.1.1  # &lt;= 実際の値を設定してください
+</code></pre></div>        </div>
+      </li>
+      <li>ノード2
+        <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  wsrep_node_address=192.168.1.2  # &lt;= 実際の値を設定してください
+</code></pre></div>        </div>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ファイアウォールの設定">
+<a class="anchor" href="#%E3%83%95%E3%82%A1%E3%82%A4%E3%82%A2%E3%82%A6%E3%82%A9%E3%83%BC%E3%83%AB%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>ファイアウォールの設定</h2>
+
+<p>クラスタを構成する各ノードが相互に通信できるように、以下のポートを解放してください。
+環境により必要な設定が異なるので、本ドキュメントでは設定方法は省略します。</p>
+
+<ul>
+  <li>3306
+    <ul>
+      <li>通常、MySQL/MariaDBはポート3306を使用します。このポートは、クライアントアプリケーションがデータベースに接続するために必要です。</li>
+    </ul>
+  </li>
+  <li>4444
+    <ul>
+      <li>SSTのために使用します。SST（State Snapshot Transfer）は、クラスタ内のノード間でデータの同期を行うプロセスの一種です。SSTは、新しく追加されたノードや、オフライン状態で大量のデータ変更があった場合に、そのノードが他のノードと完全なデータの同期を行うために使用されます。</li>
+    </ul>
+  </li>
+  <li>4567
+    <ul>
+      <li>クラスタ内のレプリケーションとクラスタ通信に使用します。</li>
+    </ul>
+  </li>
+  <li>4568
+    <ul>
+      <li>ISTのために使用します。IST（Incremental State Transfer）は、クラスタ内のノード間でデータの同期を行うプロセスの一種です。ISTは、ノードが一時的にオフライン状態になった後、再びオンラインになった際に、そのノードがオフライン時に失ったデータを迅速かつ効率的に同期するために使用されます。</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="galeraclusterの初期化">
+<a class="anchor" href="#galeracluster%E3%81%AE%E5%88%9D%E6%9C%9F%E5%8C%96" aria-hidden="true"><span class="octicon octicon-link"></span></a>GaleraClusterの初期化</h2>
+
+<p>データベースの設定が終わったら、クラスタの初期化を行います。
+このセクションは、クラスタを構成するノードの最初の1台になるノード(本ドキュメントではノード1)のみで行います。</p>
+
+<h3 id="クラスタを構成するノードとバックエンドスキーマを設定する">
+<a class="anchor" href="#%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E6%88%90%E3%81%99%E3%82%8B%E3%83%8E%E3%83%BC%E3%83%89%E3%81%A8%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%92%E8%A8%AD%E5%AE%9A%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>クラスタを構成するノードとバックエンドスキーマを設定する</h3>
+
+<p><code class="language-plaintext highlighter-rouge">/etc/my.cnf.d/server.cnf</code>ファイルにオプションを設定します。</p>
+
+<ul>
+  <li>
+    <p>wsrep_cluster_address</p>
+
+    <p>ノードがクラスタに接続する際のバックエンドスキーマとIPアドレスを設定します。
+  コメントアウトされているので、アンコメントした上で値を設定します。
+  サポートされるバックエンドスキーマは<code class="language-plaintext highlighter-rouge">gcomm</code>のみとなります。
+  最初に構成する際には、ノード1のIPアドレスのみ記述しておきます。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  wsrep_cluster_address=gcomm://192.168.1.1
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="クラスタを起動する">
+<a class="anchor" href="#%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E8%B5%B7%E5%8B%95%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>クラスタを起動する</h3>
+
+<p>以下のコマンドを実行して新しいクラスタを起動します。
+<code class="language-plaintext highlighter-rouge">sudo systemctl start mariadb</code>でmariadbを起動すると新しいクラスタにならないので、必ず<code class="language-plaintext highlighter-rouge">galera_new_cluster</code>コマンドで起動します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo galera_new_cluster mariadb
+</code></pre></div></div>
+
+<p>クラスタを起動したら、<code class="language-plaintext highlighter-rouge">systemctl status mariadb</code>でステータスを確認します。
+<code class="language-plaintext highlighter-rouge">Active</code>の項目が｀active (running)`になっていれば、起動に成功しています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl status mariadb
+● mariadb.service - MariaDB 10.11.2 database server
+   Loaded: loaded (/usr/lib/systemd/system/mariadb.service; disabled; vendor preset: disabled)
+  Drop-In: /etc/systemd/system/mariadb.service.d
+           └─migrated-from-my.cnf-settings.conf
+   Active: active (running) since Sat 2023-05-06 07:26:56 UTC; 3min 31s ago
+     Docs: man:mariadbd(8)
+           https://mariadb.com/kb/en/library/systemd/
+  Process: 863935 ExecStartPost=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (code=exited, status=0/SUCCESS)
+  Process: 863865 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] &amp;&amp; VAR= ||   VAR=`cd /usr/bin/..; /usr/bin/galera_recovery`; [ $? -eq 0 ]   &amp;&amp; systemctl set-environment _WSREP_START_POSITION=$VAR &gt;
+  Process: 863860 ExecStartPre=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (code=exited, status=0/SUCCESS)
+ Main PID: 863920 (mariadbd)
+   Status: "Taking your SQL requests now..."
+    Tasks: 13 (limit: 822260)
+   Memory: 218.6M
+   CGroup: /system.slice/mariadb.service
+           └─863920 /usr/sbin/mariadbd --wsrep-new-cluster --wsrep_start_position=00000000-0000-0000-0000-000000000000:-1
+</code></pre></div></div>
+
+<h3 id="ノードのステータスを確認する">
+<a class="anchor" href="#%E3%83%8E%E3%83%BC%E3%83%89%E3%81%AE%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>ノードのステータスを確認する</h3>
+
+<p>mysqlコマンドでクエリーを実行し、ステータスを確認します。
+(/root/.my.cnfを設定している場合は-pオプションは不要です。-pオプションをつけると/root/.my.cnfの設定に関わらずパスワードを要求されます。)</p>
+
+<ul>
+  <li>
+    <p>wsrep_cluster_status<br>
+  <code class="language-plaintext highlighter-rouge">wsrep_cluster_status</code>が<code class="language-plaintext highlighter-rouge">Primary</code>になっていれば、ノードはクラスタに接続し、同期されている、つまり正常であることを表しています。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  sudo mysql -p -e "show status;" | grep cluster_status
+  Enter password:
+  wsrep_cluster_status	Primary
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>wsrep_cluster_size<br>
+  <code class="language-plaintext highlighter-rouge">wsrep_cluster_size</code>はクラスタ内のノード数を表しています。この段階では1のはずです。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  sudo mysql -p -e "show status;" | grep cluster_size
+  Enter password:
+  wsrep_cluster_size	1
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="ノードの追加">
+<a class="anchor" href="#%E3%83%8E%E3%83%BC%E3%83%89%E3%81%AE%E8%BF%BD%E5%8A%A0" aria-hidden="true"><span class="octicon octicon-link"></span></a>ノードの追加</h2>
+
+<p>クラスタを起動したら、ノードの追加を行います。
+このセクションは、クラスタを構成するノードの2台目以降のノード(本ドキュメントではノード2)で行います。</p>
+
+<h3 id="クラスタを構成するノードとバックエンドスキーマの設定">
+<a class="anchor" href="#%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E3%82%92%E6%A7%8B%E6%88%90%E3%81%99%E3%82%8B%E3%83%8E%E3%83%BC%E3%83%89%E3%81%A8%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%9E%E3%81%AE%E8%A8%AD%E5%AE%9A" aria-hidden="true"><span class="octicon octicon-link"></span></a>クラスタを構成するノードとバックエンドスキーマの設定</h3>
+
+<p><code class="language-plaintext highlighter-rouge">/etc/my.cnf.d/server.cnf</code>ファイルにオプションを設定します。</p>
+
+<ul>
+  <li>
+    <p>wsrep_cluster_address</p>
+
+    <p>以下のように、クラスタの既存ノードのIPアドレスに加えて、追加するノードのIPアドレスを設定します。
+  それぞれのIPアドレスは<code class="language-plaintext highlighter-rouge">,</code>(カンマ)で区切ります。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  wsrep_cluster_address=gcomm://192.168.1.1,192.168.1.2
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="mariadbを開始する">
+<a class="anchor" href="#mariadb%E3%82%92%E9%96%8B%E5%A7%8B%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>MariaDBを開始する</h3>
+
+<p><code class="language-plaintext highlighter-rouge">systemctl start mariadb</code>でMariaDBを開始します。
+クラスタを起動したときに使用した<code class="language-plaintext highlighter-rouge">galera_new_cluster</code>を <strong>実行してはいけません。</strong>
+<code class="language-plaintext highlighter-rouge">galera_new_cluster</code>を実行すると既存のクラスタとは別のクラスタになってしまうため、必ず<code class="language-plaintext highlighter-rouge">systemctl start mariadb</code>でMariaDBを開始します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl start mariadb
+</code></pre></div></div>
+
+<p>MariaDBを起動したら、<code class="language-plaintext highlighter-rouge">systemctl status mariadb</code>でステータスを確認します。
+<code class="language-plaintext highlighter-rouge">Active</code>の項目が｀active (running)`になっていれば、起動に成功しています。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl status mariadb
+● mariadb.service - MariaDB 10.11.2 database server
+   Loaded: loaded (/usr/lib/systemd/system/mariadb.service; disabled; vendor preset: disabled)
+  Drop-In: /etc/systemd/system/mariadb.service.d
+           └─migrated-from-my.cnf-settings.conf
+   Active: active (running) since Sat 2023-05-06 08:38:06 UTC; 15s ago
+     Docs: man:mariadbd(8)
+           https://mariadb.com/kb/en/library/systemd/
+  Process: 24024 ExecStartPost=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (code=exited, status=&gt;
+  Process: 23759 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] &amp;&amp; VAR= ||   VAR=`cd /usr/bin/..; /usr&gt;
+  Process: 23757 ExecStartPre=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (code=exited, status=0&gt;
+ Main PID: 23814 (mariadbd)
+   Status: "Taking your SQL requests now..."
+    Tasks: 19 (limit: 822260)
+   Memory: 206.6M
+   CGroup: /system.slice/mariadb.service
+           └─23814 /usr/sbin/mariadbd --wsrep_start_position=00000000-0000-0000-0000-000000000000:-1
+</code></pre></div></div>
+
+<p>もし、<code class="language-plaintext highlighter-rouge">Active</code>の項目が｀active (running)`にならない場合はログを確認し、問題を特定してください。
+追加するノードのログだけでなく、クラスタの既存ノードのログも確認してください。
+(そちらに問題解決のヒントがある場合もあります。)</p>
+
+<h3 id="ノードのステータスを確認する-1">
+<a class="anchor" href="#%E3%83%8E%E3%83%BC%E3%83%89%E3%81%AE%E3%82%B9%E3%83%86%E3%83%BC%E3%82%BF%E3%82%B9%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>ノードのステータスを確認する</h3>
+
+<p>追加したノードにて、mysqlコマンドでクエリーを実行し、ステータスを確認します。
+このとき入力するパスワードは、ノード1で設定したMariaDBのrootのパスワードです。
+クラスタに正しく参加し同期ができていれば、MariaDBのユーザ設定が入っている<code class="language-plaintext highlighter-rouge">mysql</code>データベースも同期されるため、同じユーザとパスワードでログインすることになります。
+(ノード1で<code class="language-plaintext highlighter-rouge">/root/.my.cnf</code>を作成している場合は、追加ノードにコピーしておくと便利です。)</p>
+
+<ul>
+  <li>
+    <p>wsrep_cluster_status<br>
+  <code class="language-plaintext highlighter-rouge">wsrep_cluster_status</code>が<code class="language-plaintext highlighter-rouge">Primary</code>になっていれば、ノードはクラスタに接続し、同期されている、つまり正常であることを表しています。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  $ sudo mysql -p -e "show status;" | grep cluster_status
+  Enter password:
+  wsrep_cluster_status	Primary
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>wsrep_cluster_size<br>
+  <code class="language-plaintext highlighter-rouge">wsrep_cluster_size</code>はクラスタ内のノード数を表しています。この段階では2のはずです。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code>  $ sudo mysql -p -e "show status;" | grep cluster_size
+  Enter password:
+  wsrep_cluster_size	2
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h3 id="既存ノードにクラスタ構成ノードの情報を追加する">
+<a class="anchor" href="#%E6%97%A2%E5%AD%98%E3%83%8E%E3%83%BC%E3%83%89%E3%81%AB%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF%E6%A7%8B%E6%88%90%E3%83%8E%E3%83%BC%E3%83%89%E3%81%AE%E6%83%85%E5%A0%B1%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B" aria-hidden="true"><span class="octicon octicon-link"></span></a>既存ノードにクラスタ構成ノードの情報を追加する</h3>
+
+<p>クラスタにすでに参加しているノードのwsrep_cluster_addressオプションに、追加したノードの情報を加えます。
+もし、この変更を怠ると、既存ノードがなんらかの理由でクラスタから切断された場合、自動的にクラスタに再接続することができません。</p>
+
+<p>ノード1の<code class="language-plaintext highlighter-rouge">/etc/my.cnf.d/server.cnf</code>ファイルは、この段階では以下のようになっているはずです。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsrep_cluster_address=gcomm://192.168.1.1
+</code></pre></div></div>
+
+<p>これを追加したノードと同じく、以下のように変更します。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsrep_cluster_address=gcomm://192.168.1.1,192.168.1.2
+</code></pre></div></div>
+
+<p>設定を変更したら、MariaDBを再起動します。
+(このとき、ノード2で<code class="language-plaintext highlighter-rouge">sudo tail -f /var/log/mariadb/mariadb.log</code>しておくと、ノードがクラスタから切断され再接続する際に出力されるログを観測することができます。)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo systemctl restart mariadb
+</code></pre></div></div>
+
+<p>コマンドが終わったら、<code class="language-plaintext highlighter-rouge">mysql</code>コマンドを使って<code class="language-plaintext highlighter-rouge">wsrep_cluster_status</code>と<code class="language-plaintext highlighter-rouge">wsrep_cluster_size</code>を確認してください。ノードを追加した時と同じ値になっていれば、クラスタに再接続できています。</p>
+
+<p>以上で、GaleraClusterの構築は完了です。</p>
+
+  </div><a class="u-url" href="/fastpages/galera/rocky-linux/2023/04/26/GaleraClusterConstructionProcedure.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/fastpages/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/fastpages/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/fastpages/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>An easy to use blogging platform with support for Jupyter Notebooks.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/fastpages/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
