@@ -242,6 +242,14 @@ window.onload = wrap_img;
     <p>ssh-agentを起動する</p>
 
     <p>macOSであれば<code class="language-plaintext highlighter-rouge">ssh-add</code>コマンドの実行をトリガーとして起動するため、起動操作は必要ありません。</p>
+
+    <p>Linuxであれば以下のように<code class="language-plaintext highlighter-rouge">eval</code>コマンドを用いてssh-agentを起動します。</p>
+
+    <div class="language-plaintext highlighter-rouge">
+<div class="highlight"><pre class="highlight"><code> $ eval $(ssh-agent)
+</code></pre></div>    </div>
+
+    <p><code class="language-plaintext highlighter-rouge">ssh-agent</code>コマンドを実行すると、ssh-agentを利用するために必要な環境変数設定を行うためのコマンドが出力されます。<code class="language-plaintext highlighter-rouge">eval</code>コマンドを用いることで、<code class="language-plaintext highlighter-rouge">ssh-agent</code>コマンドの出力をそのまま実行し環境変数を設定できます、<code class="language-plaintext highlighter-rouge">eval</code>を使用せずに<code class="language-plaintext highlighter-rouge">ssh-agent</code>を実行し、出力されたコマンドを手でコピーして実行しても構いません。</p>
   </li>
   <li>
     <p>ssh-agentに秘密鍵を登録する</p>
